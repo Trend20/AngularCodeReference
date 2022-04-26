@@ -1,0 +1,91 @@
+#client-form {
+  pointer-events: none;
+}
+
+.badge,
+button {
+  pointer-events: visible;
+}
+
+.text-area-box {
+  width: 100%;
+}
+
+.inner-card {
+  border: black;
+  border-radius: 5;
+}
+
+.checkbox-margin {
+  margin: 0 10px;
+}
+
+.section-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.card-border {
+  border: 1px solid #000;
+  border-radius: 5px !important;
+}
+
+.tr-row-top-margin {
+  margin-top: 10px;
+}
+
+/* Styles for tab labels */
+.mat-tab-label {
+  padding: 5px;
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+  font-size: large;
+}
+
+/* Styles for the active tab label */
+.mat-tab-label.mat-tab-label-active {
+  padding: 5px;
+  background-color: transparent;
+  color: rgb(17, 49, 230);
+  font-weight: bold;
+}
+
+/* Styles for the ink bar */
+.mat-ink-bar {
+  background-color: green;
+}
+pdf-viewer {
+  display: block;
+  height: 70vh;
+}
+
+.pdf-container {
+  height: 70vh;
+  box-shadow: unset;
+}
+
+.tp-radio-button {
+  margin-left: 15px;
+}
+
+.button-margin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.badge-content-color {
+  color: white;
+  font-size: 13px;
+}
+
+.badge-icon-size {
+  font-size: 13px;
+  height: 13px;
+  width: 13px;
+}
+
+.td-button-spacing {
+  padding-right: 30px;
+  cursor: pointer;
+}

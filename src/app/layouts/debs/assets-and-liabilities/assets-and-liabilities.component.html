@@ -1,0 +1,486 @@
+<span class="fa fa-spinner spinner" *ngIf="loading"></span>
+
+<form [formGroup]="assetLiabilityFormGroup" class="card-body">
+  <ng-template matStepLabel>Assets and Liabilities</ng-template>
+  <p class="h2">Assets</p>
+  <span id="real-estate">
+    <p class="ml-2 mt-2 h5">Real Estate</p>
+    <p class="ml-2 mt-2 h6">(Other than the security property for this loan)</p>
+  </span>
+  <div formArrayName="realEstateList" *ngFor="let realEstate of realEstateList.controls; let i = index">
+
+    <div class="col w-100" [formGroupName]="i">
+
+      <div class="row">
+        <div class="col-md-10" id="address">
+          <mat-form-field class="w-100">
+            <mat-label>Address</mat-label>
+            <app-places-auto-complete
+              (setAddress)="setPlaceAddress(realEstate, $event)"
+              addressType="geocode"
+              required
+              formControlName="address"
+              [addressLocation]="'assets'"
+            ></app-places-auto-complete>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row mt-2 ml-1 w-100">
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label
+              >Enter value of property (Please EDIT as required)</mat-label
+            >
+            <app-currency
+              formControlName="amount"
+              [minAmount]="1"
+              [required]="true"
+            >
+            </app-currency>
+            <mat-error>Value of property Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label
+              >Enter the rental amount (Please EDIT as required)</mat-label
+            >
+            <app-currency
+              formControlName="rentAmount"
+              [minAmount]="1"
+              [required]="true"
+            >
+            </app-currency>
+            <mat-error>Rental amount Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Rental Frequency</mat-label>
+            <mat-select formControlName="rentFrequency" required>
+              <mat-option
+                *ngFor="let frequency of frequencyList"
+                [value]="frequency"
+                >{{ frequency.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Select Rental Frequency!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Address Unit</mat-label>
+            <input
+              formControlName="unitNumber"
+              matInput
+              placeholder="Enter address unit"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-icon color="accent" *ngIf="realEstate.invalid">error</mat-icon>
+          <mat-icon
+            *ngIf="i > 0 || loanPurpose == 'Purchase'"
+            (click)="deleteRealEstate(i)"
+            >delete</mat-icon
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addAsset()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary">Add another property</mat-label>
+  </div>
+
+
+  <p class="ml-2 mt-2 h5">Saving and Investment</p>
+
+  <div formArrayName="financialAssetList" *ngFor="let financialAsset of financialAssetList.controls; let i = index">
+
+    <div class="row mt-2 w-100 ml-3" [formGroupName]="i">
+      <!-- <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label
+            >Enter value of property (Please EDIT as required)</mat-label
+          >
+          <app-currency
+            formControlName="amount"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Value of property Required!</mat-error>
+        </mat-form-field>
+      </div> -->
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Financial Asset Type</mat-label>
+          <mat-select formControlName="assetType" required>
+            <mat-option *ngFor="let assetType of assetTypeList" [value]="assetType">
+              {{ assetType.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error>Select Financial Asset Type!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col" *ngIf="financialAsset?.get('assetType')?.value?.name == 'Other'">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Other Asset Type</mat-label>
+          <input matInput formControlName="otherAssetType" />
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Financial Institution</mat-label>
+          <mat-select formControlName="financialInstitution" required>
+            <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">
+              {{ financialInstitution.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error>Select Financial Institution!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <div class="row">
+          <mat-form-field class="w-100" appearance="outline" style="width: 100%">
+            <mat-label>Current Balance</mat-label>
+            <app-currency
+              formControlName="currentBalance"
+              [minAmount]="1"
+              [required]="true">
+            </app-currency>
+            <mat-error>Current Balance Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline" style="width: 100%">
+          <mat-label>Current interest Rate p.a</mat-label>
+          <input matInput formControlName="currentInterestRatePA" type="number" />
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-icon color="accent" *ngIf="financialAsset.invalid">error</mat-icon>
+        <mat-icon matSuffix (click)="deleteFinancialAsset(i)">delete</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addFinancialAsset()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary"
+      >Add another financial asset type</mat-label
+    >
+  </div>
+
+
+  <!-- deposits -->
+  <p class="ml-2 mt-2 h5">Deposit paid on property(ies) purchased</p>
+  <div
+    formArrayName="depositPaidList"
+    *ngFor="let depositPaid of depositPaidList.controls; let i = index"
+  >
+    <div class="row ml-3" [formGroupName]="i">
+      <div class="col-lg-3">
+        <mat-form-field class="w-100" appearance="outline" style="width: 100%">
+          <mat-label>Amount</mat-label>
+          <app-currency
+            formControlName="amount"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Amount Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-1">
+        <mat-icon color="accent" *ngIf="depositPaid.invalid">error</mat-icon>
+        <mat-icon (click)="deleteDepositPaid(i)">delete</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addDepositPaid()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary"
+      >Add another deposit paid on property(ies) purchased</mat-label
+    >
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 float-right">
+      <mat-form-field
+        class="w-100 col-md-4 pull-right mr-2"
+        style="width: 100%"
+        appearance="outline"
+      >
+        <mat-label>Total Assets</mat-label>
+        <app-currency
+          formControlName="totalAssets"
+          [minAmount]="0"
+          [required]="false"
+          [readonly]="true"
+        >
+        </app-currency>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+  <!-- liabilities -->
+  <p class="ml-2 mt-2 h2">Liabilities</p>
+  <div
+    formArrayName="liabilityList"
+    *ngFor="let liability of liabilityList.controls; let i = index"
+  >
+    <div [formGroupName]="i">
+      <div class="row ml-3 w-100">
+        <div class="col-md-10">
+          <mat-form-field class="w-100">
+            <mat-label>Address</mat-label>
+            <mat-select formControlName="smsfRealEstateAddressId">
+              <mat-option
+                *ngFor="let realEstate of finalUniqueArray()"
+                [value]="realEstate.value"
+                >{{ realEstate.addressVal }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2 mt-3">
+          <mat-checkbox formControlName="addressToBeRefinanced"
+            >To be refinanced</mat-checkbox
+          >
+        </div>
+      </div>
+
+      <div class="row ml-3 w-100">
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Select lender name</mat-label>
+            <mat-select formControlName="lenderName">
+              <mat-option
+                *ngFor="let financialInstitution of financialInstitutionList"
+                [value]="financialInstitution"
+              >
+                {{ financialInstitution.name }} </mat-option
+              >appearance="outline"
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div
+          class="col"
+          *ngIf="liability?.get('lenderName')?.value?.name == 'Others'"
+        >
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Other Lender</mat-label>
+            <input matInput formControlName="otherLender" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Outstanding Balance</mat-label>
+            <app-currency
+              formControlName="outstandingBalance"
+              [minAmount]="1"
+              [required]="true"
+            >
+            </app-currency>
+            <mat-error>Outstanding Balance Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Limit</mat-label>
+            <app-currency
+              formControlName="limit"
+              [minAmount]="1"
+              [required]="true"
+            >
+            </app-currency>
+            <mat-error>Limit Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row ml-3 w-100">
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Minimum monthly payment</mat-label>
+            <app-currency
+              formControlName="minimumMonthlyPayment"
+              [minAmount]="1"
+              [required]="true"
+            >
+            </app-currency>
+            <mat-error>Minimum monthly payment Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Current Interest Rate</mat-label>
+            <input
+              matInput
+              formControlName="currentInterestRate"
+              required
+              type="number"
+            />
+            <mat-error>Current Interest Rate Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col">
+          <div class="row">
+            <div class="col-md-10">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Remaining Term</mat-label>
+                <input
+                  matInput
+                  formControlName="remainingTerm"
+                  required
+                  type="number"
+                />
+                <mat-error>Remaining Term Required!</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-1">
+              <mat-icon (click)="deleteLiability(i)">delete</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addLiability()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary">Add another Liability</mat-label>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 float-right">
+      <mat-form-field
+        class="w-100 col-md-4 pull-right mr-2"
+        style="width: 100%"
+        appearance="outline"
+      >
+        <mat-label>Total Liabilities</mat-label>
+        <app-currency
+          formControlName="totalLiabilities"
+          [minAmount]="0"
+          [readonly]="true"
+        >
+        </app-currency>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+  <p class="ml-2 mt-2 h2">Expenses</p>
+
+  <div
+    formArrayName="expenseList"
+    *ngFor="let expense of expenseList.controls; let i = index"
+  >
+    <div class="row ml-3" [formGroupName]="i">
+      <div class="col-md-3">
+        <mat-form-field class="w-100" style="width: 100%" appearance="outline">
+          <mat-label>Select Expense Type</mat-label>
+          <mat-select formControlName="expenseType" required>
+            <mat-option
+              *ngFor="let expenseType of expenseTypeList"
+              [value]="expenseType"
+              >{{ expenseType.description }}</mat-option
+            >
+            <!-- <mat-option [value]="otherExpenseType">{{
+              otherExpenseType.description
+            }}</mat-option> -->
+          </mat-select>
+          <mat-error>Select Expense Type!</mat-error>
+        </mat-form-field>
+      </div>
+      <div
+        class="col-md-3"
+        *ngIf="expense?.get('expenseType')?.value?.description == 'Other'"
+      >
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Other Expense Type</mat-label>
+          <input matInput formControlName="otherExpenseType" />
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field class="w-100" appearance="outline" style="width: 100%">
+          <mat-label>Annual running costs</mat-label>
+          <app-currency
+            formControlName="annualRunningCosts"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Annual running costs Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-1">
+        <mat-icon color="accent" *ngIf="expense.invalid">error</mat-icon>
+        <mat-icon *ngIf="i > 0" (click)="deleteExpense(i)">delete</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addExpense()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary">Add another Expense</mat-label>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 float-right">
+      <mat-form-field
+        class="mx-2 w-100 col-md-4 pull-right mr-2"
+        style="width: 100%"
+        appearance="outline"
+      >
+        <mat-label>Total Expenses</mat-label>
+        <app-currency
+          formControlName="totalExpenses"
+          [minAmount]="1"
+          [required]="true"
+          [readonly]="true"
+        >
+        </app-currency>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="mt-1">
+    <button class="btn-sm btn-outline-primary" mat-button matStepperPrevious>
+      Back
+    </button>
+    <button
+      class="btn-sm btn-outline-primary float-right"
+      mat-button
+      matStepperNext
+      (click)="checkAssetAndLiabilitiesFormValidity()"
+    >
+      Next
+    </button>
+  </div>
+</form>

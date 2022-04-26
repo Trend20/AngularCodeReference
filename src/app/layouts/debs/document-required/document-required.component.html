@@ -1,0 +1,93 @@
+<form class="card-body" [formGroup]="documentsRequiredFormGroup!">
+  <ng-template matStepLabel>Documents Required</ng-template>
+  <p class="h2">Documents Required</p>
+
+  <div class="col">
+    <div class="row">
+      <p>
+        To progress this loan application, please upload the required document/s
+        or provide comment in the category provided.
+      </p>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">FILE NAME</th>
+          <th scope="col"></th>
+          <th scope="col">UPLOADED FILE NAME</th>
+          <th scope="col">LAST UPDATED</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let document of docsRequired; let i = index">
+          <th>
+            <p>{{ document.name }}</p>
+          </th>
+          <td>
+            <div>
+              <input
+                type="file"
+                class="file-input"
+                (change)="onFileSelected($event, i)"
+                #fileUpload
+              />
+
+              <div>
+                <button mat-button color="primary" (click)="fileUpload.click()">
+                  Click here to upload
+                </button>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <p *ngIf="document.spinnerStatus === false">
+              <a href="{{ document.url }}">{{ document.documentName }}</a>
+            </p>
+
+            <div
+              *ngIf="document.spinnerStatus === true"
+              class="spinner-border text-success"
+              role="status"
+            >
+            </div>
+          </td>
+          <td>
+            <p>{{ document.uploadDate }}</p>
+          </td>
+          <td>
+            <div *ngIf="document.url !== ''">
+              <mat-icon
+                (click)="onFileDelete($event, i)"
+                color="warn"
+                aria-hidden="false"
+                aria-label="Example home icon"
+                >delete</mat-icon
+              >
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="w-100 mt-3">
+    <h3><b>Broker comments (If applicable)</b></h3>
+    <mat-form-field class="w-50" appearance="outline">
+      <mat-label>Broker comments</mat-label>
+      <textarea
+        matInput
+        rows="10"
+        cols="50"
+        Broker="Broker comments"
+      ></textarea>
+    </mat-form-field>
+  </div>
+    <div class="mt-1">
+      <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>Back</button>
+      <button class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext>Submit</button>
+    </div>
+</form>

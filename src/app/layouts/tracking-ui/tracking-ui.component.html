@@ -1,0 +1,10 @@
+<app-top-nav></app-top-nav>
+
+    
+<app-side-nav></app-side-nav>
+<section id="section"  class="section-container">
+   
+<div style="width: 100%;padding: 10px;" id="container" class="container-fluid mt-2"  [@slideInAnimation]="o.isActivated ? o.activatedRoute : ''">
+    <router-outlet #o="outlet"></router-outlet>
+</div>
+</section> 

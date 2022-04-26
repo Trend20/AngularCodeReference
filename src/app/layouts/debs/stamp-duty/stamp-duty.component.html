@@ -1,0 +1,74 @@
+<div class="container">
+  <form [formGroup]="stampDuty"  id="calc-container">
+    <div class="row" class="heading">
+      <h3>Stamp Duty Calculator</h3>
+    </div>
+
+    <div class="row w-100" id="top-inputs">
+        <mat-form-field id="value-form-field" appearance="fill">
+          <mat-label class="text">Loan Value</mat-label>
+          <!-- <input matInput formControlName="value"/> -->
+          <app-currency formControlName="value" [minAmount]="1"  [required]="true">  </app-currency>
+        </mat-form-field>
+        <mat-form-field id="state-form-field" appearance="fill">
+          <mat-label class="text">State</mat-label>
+          <mat-select formControlName="state">
+            <mat-option>Select State</mat-option>
+            <mat-option *ngFor="let state of stateList" [value]="state">{{state.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+    </div>
+
+   <div class="col-md-4">
+    <div class="requirement mt-2">
+      <h3>Property Type:</h3>
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="1">Residential Property</mat-radio-button>
+        <mat-radio-button value="2">Investment Property</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="requirement mt-2">
+      <h3>First time buyer?</h3>
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="1" class="mr-3">Yes</mat-radio-button>
+        <mat-radio-button value="2">No</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="requirement mt-2">
+      <h3>Are you purchasing.....</h3>
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="1">An Established Home</mat-radio-button>
+        <mat-radio-button value="2">A New Home</mat-radio-button>
+        <mat-radio-button value="2">Vacant Land</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="requirement mt-2">
+      <h3>Foreign Purchaser?</h3>
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="2" class="mr-3">Ye</mat-radio-button>
+        <mat-radio-button value="2">No</mat-radio-button>
+      </mat-radio-group>
+    </div>
+   </div>
+
+    <div class="row w-100">
+        <button  (click)="calculateStampDuty()" id="calc-btn">Calculate Duty</button>
+    </div>
+  </form>
+
+  <div class="row" id="value">
+   <div class="heading">
+      <h3>Results</h3>
+   </div>
+   <div class="sub-headings">
+      <h3>Mortgage:  {{stampDuty.get('value')?.value}}</h3>
+      <h3>State: {{stampDuty.get('state')?.value?.name}}</h3>
+      <h3>Stamp Duty: {{stampDuty.get('stampDuty')?.value}}</h3>
+   </div>
+  </div>
+
+
+</div>

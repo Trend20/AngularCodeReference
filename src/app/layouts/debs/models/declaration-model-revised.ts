@@ -1,0 +1,62 @@
+export interface BusinessPartnerPage {
+  agreeToSignDigitally: string | undefined;
+  businessPartnerName: string | undefined;
+  clientFace: string | undefined;
+  clientFaceDetails: string | undefined;
+  closePersonal: string | undefined;
+  closePersonalDetails: string | undefined;
+  customerBorrowingsDetails: string | undefined;
+  dateOfSignature: string | undefined;
+  enterLiability: string | undefined;
+  existingCommitments: string | undefined;
+  existingCommitmentsDetails: string | undefined;
+  exitCost: number;
+  exitStrategyDetails: string | undefined;
+  featuresRequestedDetails: string | undefined;
+  financialPosition: string | undefined;
+  financialPositionDetails: string | undefined;
+  id: string | undefined;
+  ifConflictExistDetails: string | undefined;
+  loanApplicationId: string | undefined;
+  loanProductsDetails: string | undefined;
+  loanPurposeAndBenefits: string | undefined;
+  refinanceReasons: string | undefined;
+  sufficientEnglish: string | undefined;
+  sufficientEnglishDetails: string | undefined;
+  selectPreferredSignature: string | undefined;
+}
+
+export interface BrokerDeclarationPage {
+  accreditationNumber: string | undefined;
+  aclNumber: string | undefined;
+  alternativeDocumentPost: string | undefined;
+  applicantFormerName: string | undefined;
+  bankruptcyDischargeDate: string | undefined;
+  clientJudgement: string | undefined;
+  contactPhoneNumber: string | undefined;
+  creditRepresentativeName: string | undefined;
+  creditorBenefit: string | undefined;
+  dateOfSignature: string | undefined;
+  defaultLegalAction: string | undefined;
+  dischargeDate: string | undefined;
+  electronicDelivery: string | undefined;
+  expectSignificantChange: string | undefined;
+  expectSignificantChangeDetails: string | undefined;
+  firstCheckboxDeclaration: string | undefined;
+  firstDateOfChange: string | undefined;
+  formerNameReason: string | undefined;
+  id: string | undefined;
+  lastCheckBoxDeclaration: string | undefined;
+  lenderApplication: string | undefined;
+  lenderApplicationDetails: string | undefined;
+  licenceHolderNumber: string | undefined;
+  licenceNumber: string | undefined;
+  liquidatorAppointment: string | undefined;
+  loanApplicationId: string | undefined;
+  loanGuarantee: string | undefined;
+  questionsDetails: string | undefined;
+  secondDateOfChange: string | undefined;
+  transactionBalance: string | undefined;
+  transactionBalanceDetails: string | undefined;
+  preferredSignatureFont: string | undefined;
+}

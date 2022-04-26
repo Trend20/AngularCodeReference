@@ -1,0 +1,230 @@
+<form [formGroup]="creditDecisionFormGroup">
+
+  <!-- conditional approval -->
+
+  <mat-card class="card mt-2" *ngIf="isExpress == false || preApproval == 'No'">
+
+  <div class="conditional">
+    <section class="top-text">
+      <p class="h1">Congratulations! We confirm the loan is Conditionally approved, subject to:</p>
+    </section>
+
+
+   <section class="conditional-steps" *ngFor="let question of approvalQuestions; let i = index;">
+    <p>
+      <span>{{ i + 1 }}.</span>
+      {{ question.question }}</p>
+   </section>
+
+   <div class="note">
+     <p>Note: Information in the documents provided may require further clarification which may result in a review of the conditional approval decision.</p>
+   </div>
+
+   <div class="offer-statement">
+     <p>This is not an offer of finance nd should not be used to enter into binding agreements or other arrangements. </p>
+   </div>
+
+   <!-- .steps -->
+
+   <div class="steps">
+     <h3>What's Next?</h3>
+
+     <div class="first-step">
+       <span>
+         <h3>Step 1:</h3>
+         <span id="file-upload">
+          <p>You upload the documents</p>
+          <div class="updload">
+           <input type="file" class="file-input"
+           (change)="onFileSelected($event)" #fileUpload>
+
+           <div class="file-upload">
+
+           {{fileName || ""}}
+
+           <button  color="primary" class="upload-btn"
+             (click)="fileUpload.click()">
+             here
+           </button>
+          </div>
+          </div>
+       </span>
+       </span>
+     </div>
+     <h4>Once all documents are uploaded:</h4>
+
+     <div class="proceeding-steps">
+       <span>
+        <h3>Step 2:</h3>
+        <p>Valuation to be ordered</p>
+       </span>
+       <span>
+        <h3>Step 3:</h3>
+        <p>We review and validate the documents and data</p>
+       </span>
+       <span>
+        <h3>Step 4:</h3>
+        <p>We confirm Conditional Approval</p>
+       </span>
+     </div>
+   </div>
+
+   <button class="print-btn btn btn-outline-primary" (click)="getDocument()">Print Conditional Assessment Letter</button>
+  </div>
+  </mat-card>
+
+
+  <!-- Formal Approval -->
+  <mat-card class="card mt-2" *ngIf="isExpress == true">
+  <div class="formal">
+
+
+    <section class="top-text">
+      <p class="h1">Congratulations! We confirm the loan is Formally approved, subject to:</p>
+    </section>
+
+
+   <section class="conditional-steps">
+
+      <p>
+        <span>1.</span>
+        Receipt of satisfactory supporting documents to validate the information submitted.
+      </p>
+      <p>
+        <span>2.</span>
+        Formal Approval by the Funder.
+      </p>
+   </section>
+
+   <div class="note">
+     <p>Note: Information in the documents provided may require further clarification which may result in a review of the conditional approval decision.</p>
+   </div>
+
+   <div class="offer-statement">
+     <p>This is not an offer of finance nd should not be used to enter into binding agreements or other arrangements. </p>
+   </div>
+
+   <!-- .steps -->
+
+   <div class="steps">
+     <h3>What's Next?</h3>
+
+     <div class="first-step">
+       <span>
+         <h3>Step 1:</h3>
+         <span id="file-upload">
+           <p>You upload the documents</p>
+           <div class="updload">
+            <input type="file" class="file-input"
+            (change)="onFileSelected($event)" #fileUpload>
+
+            <div class="file-upload">
+
+            {{fileName || ""}}
+
+            <button  color="primary" class="upload-btn"
+              (click)="fileUpload.click()">
+              here
+            </button>
+           </div>
+           </div>
+        </span>
+         <!-- <a href="#">here</a> -->
+       </span>
+     </div>
+     <h4>Once all documents are uploaded:</h4>
+
+     <div class="proceeding-steps">
+       <span>
+        <h3>Step 2:</h3>
+        <p>We review and validate the documents and data</p>
+       </span>
+       <span>
+        <h3>Step 3:</h3>
+        <p>We confirm Formal Approval</p>
+       </span>
+     </div>
+   </div>
+
+   <button class="print-btn btn btn-outline-primary" (click)="getDocument()">Print Letter of Offer</button>
+  </div>
+
+  </mat-card>
+
+
+  <!-- pre-approval -->
+  <!-- this.serviceabilityFormGroup?.get('preApproval')?.value == 'No' -->
+  <mat-card class="card mt-2" *ngIf="preApproval == 'Yes'">
+    <div class="pre-approval">
+      <section class="top-text">
+        <p class="h1">Congratulations! We confirm the loan is Pre  Approved, subject to:</p>
+      </section>
+      <section class="conditional-steps" *ngFor="let question of preApprovalQuestions; let i = index;">
+        <p>
+          <span>{{ i + 1 }}.</span>
+          {{ question.question }}</p>
+      </section>
+
+      <div class="note">
+        <p>Note: Information in the documents provided may require further clarification which may result in a review of the conditional approval decision.</p>
+      </div>
+
+      <div class="offer-statement">
+        <p>This is not an offer of finance nd should not be used to enter into binding agreements or other arrangements. </p>
+      </div>
+
+   <!-- .steps -->
+
+   <div class="steps">
+     <h3>What's Next?</h3>
+
+     <div class="first-step">
+       <span>
+         <h3>Step 1:</h3>
+
+         <span id="file-upload">
+          <p>You upload the documents</p>
+          <div class="updload">
+           <input type="file" class="file-input"
+           (change)="onFileSelected($event)" #fileUpload multiple>
+
+           <div class="file-upload">
+
+           {{fileName || ""}}
+
+           <button  color="primary" class="upload-btn"
+             (click)="fileUpload.click()">
+             here
+           </button>
+          </div>
+          </div>
+       </span>
+       </span>
+     </div>
+     <h4>Once all documents are uploaded:</h4>
+
+     <div class="proceeding-steps">
+       <span>
+        <h3>Step 2:</h3>
+        <p>Valuation to be ordered</p>
+       </span>
+       <span>
+        <h3>Step 3:</h3>
+        <p>We review and validate the documents and data</p>
+       </span>
+       <span>
+        <h3>Step 4:</h3>
+        <p>We confirm Formal Approval</p>
+       </span>
+     </div>
+   </div>
+
+   <button class="print-btn btn btn-outline-primary" (click)="getDocument()">Print Pre-Approval Letter</button>
+  </div>
+  </mat-card>
+  <!-- navigation buttons -->
+  <div class="mt-1">
+    <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>Back</button>
+    <button class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext>Next</button>
+  </div>
+</form>

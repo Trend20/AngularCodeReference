@@ -1,0 +1,31 @@
+<div [formGroup]="ownershipFormGroup" #owners>
+    <div formArrayName="ownershipArray">
+        <div class="row" [formGroupName]="i" *ngFor="let ownership of ownershipArray.controls; let i = index;">
+            <div class="col-md-6" >
+                <mat-form-field class="w-100">
+                  <mat-label>Name</mat-label>
+                  <mat-select  formControlName="applicantId" (selectionChange)="updateNameValueChange(i, ownership, $event)">
+                    <mat-option *ngFor="let name of memberNames; let i = index" [value]="name.applicantId">{{name.firstName}}</mat-option>
+                    <mat-option value="Other">Other</mat-option>
+                  </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-2" *ngIf="ownership.get('applicantId')?.value === 'Other'">
+              <mat-form-field class="w-100">
+                <mat-label>Other Owner</mat-label>
+                <input type="text" matInput formControlName="otherOwner" (input)="handleInput(ownership, i)">
+              </mat-form-field>
+          </div>
+            <div class="col-md-2">
+                <mat-form-field class="w-100">
+                  <mat-label>Ownership (%)</mat-label>
+                  <mat-select matInput formControlName="ownership" (selectionChange)="updateOwnershipValueChange(i, ownership, $event)">
+                    <mat-option *ngFor='let _ of ownershipPercentage; let i = index' [value]="( 100 - i )">{{( 100 - i ) + '%'}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+            </div>
+            <button mat-icon-button aria-label="Delete Ownership" *ngIf="i != 0" class="btn-outline-danger" (click)="deleteOwnership(i)"><mat-icon>delete</mat-icon></button>
+            <!-- <button mat-icon-button aria-label="Add Ownership" *ngIf="i == (ownershipArray.length - 1) " class="btn-outline-primary" (click)="addOwnership()"><mat-icon>add</mat-icon></button> -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,825 @@
+<form class="card-body" [formGroup]="additionalPersonalInformationFormGroup">
+  <ng-template matStepLabel>Additional Personal Information</ng-template>
+  <div formArrayName="additionalPersonalInformationMemberList"
+       *ngFor="let additionalInformationMemberFormGroup of additionalPersonalInformationMemberList.controls; let i = index;">
+    <div class="right-aligned-header row">
+      <div class="col-md-10 section-title">Additional Information
+        for {{ getMemberInformationFormGroupArray(personalDetailFormGroup,'memberDetailList','title', i)}} {{ getMemberInformationFormGroupArray(personalDetailFormGroup,'memberDetailList','firstName', i)}} {{ getMemberInformationFormGroupArray(personalDetailFormGroup,'memberDetailList','middleName', i)}} {{ getMemberInformationFormGroupArray(personalDetailFormGroup,'memberDetailList','lastName', i)}} </div>
+      <div class="col-md-2 float-right">
+        <mat-icon color="accent" *ngIf="additionalInformationMemberFormGroup.invalid">error</mat-icon>
+      </div>
+    </div>
+    <div [formGroupName]="i">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <input matInput formControlName="identificationType" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <input matInput  formControlName="dateOfBirth" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label class="text-muted mt-4">Marital status</mat-label>
+            <mat-select formControlName="maritalStatus">
+              <mat-option *ngFor="let maritalStatus of maritalStatusList"
+                          [value]="maritalStatus">{{maritalStatus.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label class="text-muted mt-4">Number of Dependants</mat-label>
+            <mat-select formControlName="numberOfDependants">
+              <mat-option *ngFor="let numberOfDependant of numberOfDependantList" [value]="numberOfDependant">{{numberOfDependant}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-1" *ngFor="let item of getDependantsRange(i); let currentElementIndex=index">
+              <mat-form-field class="w-100">
+                <mat-label>Age</mat-label>
+                <input matInput formControlName="dependantAge" type="number" [min]="0"/>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label class="text-muted mt-4">Residential Address</mat-label>
+            <input matInput formControlName="residentialAddress" readonly/>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <mat-label>At this Address since
+            <mat-icon class="mat-error" matTooltip="Current address since cannot be greater than today" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.validCurrentAddressStay && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+          </mat-label>
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Month</mat-label>
+                <mat-select formControlName="currentAddressMonth">
+                  <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Year</mat-label>
+                <mat-select formControlName="currentAddressYear">
+                  <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="currentStayLessThanThreeYears(additionalInformationMemberFormGroup)">
+          <mat-label>Previous Address
+            </mat-label>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="w-100">
+                <app-places-auto-complete formControlName="previousAddress"  (setAddress)="setPreviousAddress($event, additionalInformationMemberFormGroup)"></app-places-auto-complete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="currentStayLessThanThreeYears(additionalInformationMemberFormGroup)">
+          <mat-label>At this Address from
+            <mat-icon class="mat-error" matTooltip="Previous address from cannot be greater than today" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousAddressFromNotGreaterThanToday && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+            <mat-icon class="mat-error" matTooltip="Previous address to cannot be greater than today" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousAddressToNotGreaterThanToday && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+            <mat-icon class="mat-error" matTooltip="Previous address from cannot be greater than previous address to" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousAddressFromNotGreaterThanPreviousAddressTo && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+          </mat-label>
+          <div class="row">
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Month</mat-label>
+                <mat-select formControlName="previousAddressMonthFrom">
+                  <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Year</mat-label>
+                <mat-select formControlName="previousAddressYearFrom">
+                  <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-1">
+              <label>to</label>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Month</mat-label>
+                <mat-select formControlName="previousAddressMonthTo">
+                  <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Year</mat-label>
+                <mat-select formControlName="previousAddressYearTo">
+                  <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label>Current residential status</mat-label>
+            <mat-select formControlName="currentResidentialStatus">
+              <mat-option *ngFor="let currentResidentialStatus of currentResidentialStatusList"
+                          [value]="currentResidentialStatus">{{currentResidentialStatus.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3"
+             *ngIf="additionalInformationMemberFormGroup?.get('currentResidentialStatus')?.value=='Other'">
+          <mat-form-field class="w-100">
+            <mat-label>Other residential status</mat-label>
+            <input matInput formControlName="otherResidentialStatus"/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label>Postal Address</mat-label>
+            <mat-select formControlName="postalAddress">
+              <mat-option value="Same as residential">Same as residential</mat-option>
+              <mat-option value="Other">Other</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3" *ngIf="additionalInformationMemberFormGroup?.get('postalAddress')?.value=='Other'">
+          <mat-form-field class="w-100">
+            <mat-label>Other Postal Address</mat-label>
+            <input matInput formControlName="otherPostalAddress"/>
+          </mat-form-field>
+        </div>
+      </div>
+      <section *ngIf="getMemberInformationFormGroupArray(serviceabilityFormGroup,'members','applicantType', i)?.name=='PAYG'">
+        <!-- PAYG section -->
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Employment Type</mat-label>
+              <input matInput formControlName="employmentType" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Employment Status</mat-label>
+              <input matInput formControlName="employmentStatus" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Occupation</mat-label>
+              <mat-select formControlName="occupation">
+                <mat-option *ngFor="let occupation of occupationList" [value]="occupation">{{occupation.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>Employer Name</mat-label>
+              <input matInput formControlName="employerName" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>PAYG Start Date</mat-label>
+              <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="paygStartDate" readonly/>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>On Probation</mat-label>
+                  <mat-select formControlName="onProbation">
+                    <mat-option value="Yes">Yes</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6" *ngIf="additionalInformationMemberFormGroup?.get('onProbation')?.value=='Yes'">
+                <mat-form-field class="w-100">
+                  <mat-label>Probation Period</mat-label>
+                  <mat-select formControlName="probationPeriod">
+                    <mat-option *ngFor="let _ of probationPeriodList; let i = index" [value]="i">{{i}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div formArrayName="incomeList" *ngFor="let incomeFormGroup of getFormArray(additionalInformationMemberFormGroup, 'incomeList')?.controls; let j = index;">
+          <div [formGroupName]="j">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Gross Income</mat-label>
+                  <mat-select formControlName="income">
+                    <mat-option *ngFor="let income of paygIncomeSourceList" [value]="income">{{income.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Frequency</mat-label>
+                  <mat-select formControlName="frequency">
+                    <mat-option *ngFor="let frequency of incomeFrequencyList"
+                                [value]="frequency">{{frequency.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Amount</mat-label>
+                  <app-currency formControlName="amount"></app-currency>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <div class="row">
+                  <div *ngIf="j<1" class="col-md-6">
+                    <mat-form-field class="w-100">
+                      <mat-label>Work car provided (for personal use only)</mat-label>
+                      <mat-select formControlName="workCarProvided">
+                        <mat-option value="Yes">Yes</mat-option>
+                        <mat-option value="No">No</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="j>0" class="col-md-3">
+                    <mat-icon matSuffix (click)="deleteIncome(i, j)" class="float-right">delete</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button mat-icon-button class="btn-outline-primary">
+            <mat-icon aria-hidden="false" (click)="addAnotherIncome(i)">add</mat-icon>
+          </button>
+          <mat-label class="btn-outline-primary">Add another income</mat-label>
+        </div>
+        <section *ngIf="currentPAYGStartDateLessThanTwoYears(additionalInformationMemberFormGroup)">
+          <div class="row">
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>Previous Employer ABN</mat-label>
+                <app-abn formControlName="previousEmployerAbn" (abnSearchDetailsEmitter)="setPreviousEmployer($event, additionalInformationMemberFormGroup)"></app-abn>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>Employer Name</mat-label>
+                <input matInput formControlName="previousEmployerName"/>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>Employment Type</mat-label>
+                <mat-select formControlName="previousEmployerEmploymentType">
+                  <mat-option *ngFor="let employmentType of employmentTypeList"
+                              [value]="employmentType">{{employmentType.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3" *ngIf="additionalInformationMemberFormGroup.get('previousEmployerEmploymentType')?.value?.name ==='PAYG'">
+              <mat-form-field class="w-100">
+                <mat-label>Employment Status</mat-label>
+                <mat-select formControlName="previousEmployerPaygStatus">
+                  <mat-option *ngFor="let paygStatus of paygStatusList"
+                              [value]="paygStatus">{{paygStatus.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <mat-label>Occupation</mat-label>
+              <div class="row">
+                <div class="col">
+                  <mat-form-field class="w-100">
+                    <mat-select formControlName="previousEmployerOccupation">
+                      <mat-option *ngFor="let occupation of occupationList"
+                                  [value]="occupation">{{occupation.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <mat-label>Date commenced from
+                <mat-icon class="mat-error" matTooltip="Previous employer from cannot be greater than today" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousEmployerFromNotGreaterThanToday && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+                <mat-icon class="mat-error" matTooltip="Previous employer to cannot be greater than today" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousEmployerToNotGreaterThanToday && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+                <mat-icon class="mat-error" matTooltip="Previous employer from cannot be greater than previous employer to" matTooltipPosition="above" *ngIf="additionalInformationMemberFormGroup.errors?.previousEmployerFromNotGreaterThanPreviousEmployerTo && (additionalInformationMemberFormGroup.touched || additionalInformationMemberFormGroup.dirty)">error</mat-icon>
+              </mat-label>
+              <div class="row">
+                <div class="col-md-2">
+                  <mat-form-field class="w-100">
+                    <mat-label>Month</mat-label>
+                    <mat-select formControlName="previousEmployerMonthFrom">
+                      <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-2">
+                  <mat-form-field class="w-100">
+                    <mat-label>Year</mat-label>
+                    <mat-select formControlName="previousEmployerYearFrom">
+                      <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-1">
+                  <label>to</label>
+                </div>
+                <div class="col-md-2">
+                  <mat-form-field class="w-100">
+                    <mat-label>Month</mat-label>
+                    <mat-select formControlName="previousEmployerMonthTo">
+                      <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-2">
+                  <mat-form-field class="w-100">
+                    <mat-label>Year</mat-label>
+                    <mat-select formControlName="previousEmployerYearTo">
+                      <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div formArrayName="secondJobList"
+             *ngFor="let secondJobFormGroup of getFormArray(additionalInformationMemberFormGroup, 'secondJobList')?.controls; let j = index;">
+          <div class="right-aligned-header row">
+            <div class="col-md-10 sub-section-title">Job {{j+2}}</div>
+            <div class="float-right col-md-2">
+              <mat-icon (click)="deleteSecondJob(i, j)" class="float-right">delete</mat-icon>
+            </div>
+          </div>
+          <div [formGroupName]="j">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Employer ABN</mat-label>
+                  <app-abn formControlName="employerAbn" (abnSearchDetailsEmitter)="setEmployerName($event, secondJobFormGroup)"></app-abn>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Employer Name</mat-label>
+                  <input matInput formControlName="employerName"/>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Employment Type</mat-label>
+                  <mat-select formControlName="employmentType">
+                    <mat-option *ngFor="let employmentType of employmentTypeList"
+                                [value]="employmentType">{{employmentType.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3" *ngIf="secondJobFormGroup.get('employmentType')?.value?.name==='PAYG'">
+                <mat-form-field class="w-100">
+                  <mat-label>Employment Status</mat-label>
+                  <mat-select formControlName="employmentStatus">
+                    <mat-option *ngFor="let paygStatus of paygStatusList"
+                                [value]="paygStatus">{{paygStatus.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Occupation</mat-label>
+                  <mat-select formControlName="occupation">
+                    <mat-option *ngFor="let occupation of occupationList"
+                                [value]="occupation">{{occupation.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>PAYG Start Date</mat-label>
+                  <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="paygStartDate"/>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-6">
+                    <mat-form-field class="w-100">
+                      <mat-label>On Probation</mat-label>
+                      <mat-select formControlName="onProbation">
+                        <mat-option value="Yes">Yes</mat-option>
+                        <mat-option value="No">No</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6" *ngIf="secondJobFormGroup?.get('onProbation')?.value=='Yes'">
+                    <mat-form-field class="w-100">
+                      <mat-label>Probation Period</mat-label>
+                      <mat-select formControlName="probationPeriod">
+                        <mat-option *ngFor="let _ of probationPeriodList; let i = index" [value]="i">{{i}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--income section -->
+            <div formArrayName="incomeList"
+                 *ngFor="let incomeFormGroup of getFormArray(secondJobFormGroup, 'incomeList').controls ; let k = index;">
+              <div [formGroupName]="k">
+                <div class="row">
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100">
+                      <mat-label>Income</mat-label>
+                      <mat-select formControlName="income">
+                        <mat-option *ngFor="let income of paygIncomeSourceList" [value]="income">{{income.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100">
+                      <mat-label>Frequency</mat-label>
+                      <mat-select formControlName="frequency">
+                        <mat-option *ngFor="let frequency of incomeFrequencyList"
+                                    [value]="frequency">{{frequency.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100">
+                      <mat-label>Amount</mat-label>
+                      <app-currency formControlName="amount"></app-currency>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                          <mat-label>Work car provided (for personal use only)</mat-label>
+                          <mat-select formControlName="workCarProvided">
+                            <mat-option value="Yes">Yes</mat-option>
+                            <mat-option value="No">No</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-3">
+                        <mat-icon matSuffix (click)="deleteSecondJobIncome(i, j, k)" class="float-right">delete</mat-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button mat-icon-button class="btn-outline-primary">
+                <mat-icon aria-hidden="false" (click)="addAnotherSecondJobIncome(i, j)">add</mat-icon>
+              </button>
+              <mat-label class="btn-outline-primary">Add another income</mat-label>
+            </div>
+
+            <section *ngIf="currentPAYGStartDateLessThanTwoYears(secondJobFormGroup)">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Previous Employer ABN</mat-label>
+                  <app-abn formControlName="previousEmployerAbn" (abnSearchDetailsEmitter)="setPreviousEmployer($event, secondJobFormGroup)"></app-abn>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Employer Name</mat-label>
+                  <input matInput formControlName="previousEmployerName"/>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Employment Type</mat-label>
+                  <mat-select formControlName="previousEmployerEmploymentType">
+                    <mat-option *ngFor="let employmentType of employmentTypeList"
+                                [value]="employmentType">{{employmentType.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3" *ngIf="secondJobFormGroup.get('previousEmployerEmploymentType')?.value?.name==='PAYG'">
+                <mat-form-field class="w-100">
+                  <mat-label>Employment Status</mat-label>
+                  <mat-select formControlName="previousEmployerStatus">
+                    <mat-option *ngFor="let paygStatus of paygStatusList"
+                                [value]="paygStatus">{{paygStatus.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <mat-label>Occupation</mat-label>
+                <div class="row">
+                  <div class="col">
+                    <mat-form-field class="w-100">
+                      <mat-select formControlName="occupation">
+                        <mat-option *ngFor="let occupation of occupationList"
+                                    [value]="occupation">{{occupation.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <mat-label>Date commenced from
+                  <mat-icon class="mat-error" matTooltip="Previous employer from cannot be greater than today" matTooltipPosition="above" *ngIf="secondJobFormGroup.errors?.previousEmployerFromNotGreaterThanToday && (secondJobFormGroup.touched || secondJobFormGroup.dirty)">error</mat-icon>
+                  <mat-icon class="mat-error" matTooltip="Previous employer to cannot be greater than today" matTooltipPosition="above" *ngIf="secondJobFormGroup.errors?.previousEmployerToNotGreaterThanToday && (secondJobFormGroup.touched || secondJobFormGroup.dirty)">error</mat-icon>
+                  <mat-icon class="mat-error" matTooltip="Previous employer from cannot be greater than previous employer to" matTooltipPosition="above" *ngIf="secondJobFormGroup.errors?.previousEmployerFromNotGreaterThanPreviousEmployerTo && (secondJobFormGroup.touched || secondJobFormGroup.dirty)">error</mat-icon>
+                </mat-label>
+                <div class="row">
+                  <div class="col-md-2">
+                    <mat-form-field class="w-100">
+                      <mat-label>Month</mat-label>
+                      <mat-select formControlName="previousEmployerMonthFrom">
+                        <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-2">
+                    <mat-form-field class="w-100">
+                      <mat-label>Year</mat-label>
+                      <mat-select formControlName="previousEmployerYearFrom">
+                        <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-1">
+                    <label>to</label>
+                  </div>
+                  <div class="col-md-2">
+                    <mat-form-field class="w-100">
+                      <mat-label>Month</mat-label>
+                      <mat-select formControlName="previousEmployerMonthTo">
+                        <mat-option *ngFor="let month of monthList" [value]="month">{{month.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-2">
+                    <mat-form-field class="w-100">
+                      <mat-label>Year</mat-label>
+                      <mat-select formControlName="previousEmployerYearTo">
+                        <mat-option *ngFor="let year of getYearRange()" [value]="year">{{year}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </section>
+          </div>
+        </div>
+        <div>
+          <button mat-icon-button class="btn-outline-primary">
+            <mat-icon aria-hidden="false" (click)="addSecondJob(i)">add</mat-icon>
+          </button>
+          <mat-label class="btn-outline-primary">Add additional job (if you would like to consider this income for
+            assessment
+            purposes, please add)
+          </mat-label>
+        </div>
+      </section>
+      <section *ngIf="getMemberInformationFormGroupArray(serviceabilityFormGroup,'members','applicantType', i)?.name=='Not employed'">
+        <!-- Not employed section -->
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Employment Type</mat-label>
+              <input matInput formControlName="employmentType" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Not Employed Type</mat-label>
+              <input matInput formControlName="notEmployedType" readonly/>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Income</mat-label>
+              <mat-select formControlName="notEmployedIncomeSource">
+                <mat-option *ngFor="let notEmployedIncomeSource of notEmployedIncomeSourceList"
+                            [value]="notEmployedIncomeSource">{{notEmployedIncomeSource.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Amount</mat-label>
+              <app-currency formControlName="notEmployedIncomeAmount"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+
+      </section>
+      <section *ngIf="getMemberInformationFormGroupArray(serviceabilityFormGroup,'members','applicantType', i)?.name=='Self-employed'">
+        <!-- Self Employed section -->
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Employment Type</mat-label>
+              <input matInput formControlName="employmentType" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Type of Entity</mat-label>
+              <mat-select formControlName="entityType">
+                <mat-option *ngFor="let entityType of entityTypeList"
+                            [value]="entityType">{{entityType.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Business Activity</mat-label>
+              <input matInput formControlName="businessActivity"/>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>Self employed name</mat-label>
+              <input matInput formControlName="selfEmployedName" readonly/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Start of Business</mat-label>
+              <input matInput formControlName="businessStartDate" [max]="maxDate" [matDatepicker]="businessStartDatePicker" readonly/>
+              <mat-datepicker-toggle matSuffix [for]="businessStartDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #businessStartDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Net Profit (excluding trusts)</mat-label>
+              <app-currency formControlName="netProfit"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row" *ngIf="isEntity(additionalInformationMemberFormGroup)">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Trust Distribution</mat-label>
+              <app-currency formControlName="trustDistribution"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Abnormal Expenses</mat-label>
+              <app-currency formControlName="abnormalExpenses"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Abnormal Income</mat-label>
+              <app-currency formControlName="abnormalIncome"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Other Income</mat-label>
+              <app-currency formControlName="otherIncome"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+        <div formArrayName="addBacksList"
+             *ngFor="let addBacksFG of getFormArray(additionalInformationMemberFormGroup, 'addBacksList').controls ; let k = index;">
+          <div [formGroupName]="k">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Income</mat-label>
+                  <mat-select formControlName="income">
+                    <mat-option *ngFor="let income of addBacksIncomeList" [value]="income">{{income.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3" *ngIf="addBacksFG.get('income')?.value?.name === 'Other'">
+                <mat-form-field class="w-100">
+                  <mat-label>Other Income Source</mat-label>
+                  <input matInput formControlName="otherIncome"/>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Amount</mat-label>
+                  <app-currency formControlName="amount"></app-currency>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-3">
+                    <mat-icon (click)="deleteAddBacksIncome(i, k)" class="float-right">delete</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button mat-icon-button class="btn-outline-primary">
+            <mat-icon aria-hidden="false" (click)="addAddBacksIncome(i)">add</mat-icon>
+          </button>
+          <mat-label class="btn-outline-primary">Add "Add backs"</mat-label>
+        </div>
+        <div formArrayName="supplementaryIncomeList"
+             *ngFor="let supplementaryIncomeFG of getFormArray(additionalInformationMemberFormGroup, 'supplementaryIncomeList').controls ; let k = index;">
+          <div [formGroupName]="k">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Income</mat-label>
+                  <mat-select formControlName="income">
+                    <mat-option *ngFor="let income of supplementaryIncomeList" [value]="income">{{income.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="w-100">
+                  <mat-label>Amount</mat-label>
+                  <app-currency formControlName="amount"></app-currency>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-3">
+                    <mat-icon matSuffix (click)="deleteSupplementaryIncome(i, k)" class="float-right">delete</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button mat-icon-button class="btn-outline-primary">
+            <mat-icon aria-hidden="false" (click)="addAddSupplementaryIncome(i)">add</mat-icon>
+          </button>
+          <mat-label class="btn-outline-primary">Add Supplementary Income</mat-label>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <div class="mt-1">
+    <button class="btn-sm btn-outline-primary" mat-button matStepperPrevious>Back</button>
+    <button class="btn-sm btn-outline-primary float-right" mat-button matStepperNext>Next</button>
+  </div>
+</form>

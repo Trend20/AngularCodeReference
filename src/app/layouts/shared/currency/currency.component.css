@@ -1,0 +1,9 @@
+input {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+    font: inherit;
+    text-align: start;
+    color: currentColor;
+}

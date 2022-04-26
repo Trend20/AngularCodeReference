@@ -1,0 +1,24 @@
+<div class="row" class="form-group" [formGroup]="activeApplicantDetails">
+  <div class="col-8">
+    <!-- <signature-pad
+      [options]="signaturePadOptions"
+      (onEndEvent)="drawComplete()"
+    >
+    </signature-pad> -->
+  </div>
+
+  <div class="col-4">
+    <mat-form-field class="w-100 mt-2">
+      <mat-label>Date</mat-label>
+      <input
+        formControlName="{{dateSignatureControlFormName}}"
+        matInput
+        [matDatepicker]="picker"
+        required
+        placeholder="dd/MM/yyyy"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>

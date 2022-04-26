@@ -1,0 +1,40 @@
+.spinner {
+  font-size: 300%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+}
+
+.fa-spinner {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+
+#real-estate{
+  display: flex;
+  align-items: center;
+}
+#address {
+  width: 92% !important;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}

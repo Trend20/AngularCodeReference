@@ -1,0 +1,14 @@
+::ng-deep .mat-step-header .mat-step-icon {
+  color: rgba(0, 0, 0, 0.54);
+  background-color: transparent;
+}
+
+::ng-deep .mat-step-header ::ng-deep .mat-step-icon-state-done {
+  color: #fff !important;
+  background: rgb(6, 177, 71) !important;
+}
+
+::ng-deep .mat-step-icon-state-edit {
+  color: rgb(8, 96, 197) !important;
+  background-color: transparent !important;
+}

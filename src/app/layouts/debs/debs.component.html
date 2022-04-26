@@ -1,0 +1,123 @@
+<!-- top contents for each page -->
+<app-reusable-top-content
+[memberNames]="memberDetailNames">
+</app-reusable-top-content>
+<!-- <mat-horizontal-stepper #stepper [linear]="true"> class="loading-shade" -->
+
+      <!-- <ngx-spinner
+      bdColor="rgba(51,51,51,0.8)"
+      size="large"
+      type="ball-clip-rotate-multiple"
+      >
+    </ngx-spinner> -->
+<mat-horizontal-stepper #stepper [linear]="true" (selectionChange)="check($event)">
+<mat-step [stepControl]="serviceability?.serviceabilityFormGroup!" label="Loan Details {{serviceability?.serviceabilityFormGroup?.get('loanPurpose')?.value}}" state="assignment">
+    <ng-template matStepperIcon="assignment">
+    <mat-icon>assignment</mat-icon>
+
+     <!-- Loan Details {{serviceability?.serviceabilityFormGroup?.get('loanPurpose')?.value}} -->
+    </ng-template>
+    <app-serviceability
+      (deleteMember)="deleteMember($event)"
+      (deleteMemberNotification)="deleteMember($event)"
+      (updatedPersonalDetailMemberNotification)="updatedPersonalDetailMember($event)"
+      (addMemberNotification)="addMember($event)"
+      (updateMemberId)="updateClientDeclMemberId($event)"
+      (isRefinanceable)="updateFullCalcDetails($event)"
+      (isLoading)="updateLoadingStatus($event)"
+      (moveToPersonalDetails)="moveToNextStep()"
+      (updateWhyCalcFailed)="publishCalcFailureMessage($event)"
+      (isPreapproved)="isPreapproved($event)"
+      (updateApplicantIdToApplicantDetailsFormGroup)="passApplicantIdToApplicantDetailsFormGroup($event)"></app-serviceability>
+  </mat-step>
+  <mat-step [stepControl]="personalDetailsComponent?.personalDetailFormGroup!" label="Personal Details" state="account_box">
+    <ng-template matStepperIcon="account_box">
+      <mat-icon>account_box</mat-icon>
+    </ng-template>
+    <app-personal-details [personalDetailFormGroup]="personalDetailFormGroup" (moveToNextPage) = "moveToNextOrPreviousFromPersonal($event)"
+      (onUpdatePersonalDetalsMemberFirstname)="compareMemberListFirstName($event)" [serviceabilityFormGroup]="serviceability?.serviceabilityFormGroup"></app-personal-details>
+  </mat-step>
+  <mat-step *ngIf="(refinanceStatus|async) === false" [stepControl]="assetsAndLiability?.assetLiabilityFormGroup!" label="Assets and Liabilities" state="web_asset">
+    <ng-template matStepperIcon="web_asset">
+      <mat-icon>web_asset</mat-icon>
+    </ng-template>
+    <app-assets-and-liabilities (updateWhyCalcFailed)="publishCalcFailureMessage($event)" (isLoading)="updateLoadingStatus($event)" (isServiceable)="updateFullCalcDetailsAtAssets($event)" [personalDetailFormGroup]="personalDetailFormGroup" [serviceabilityFormGroup]="serviceability?.serviceabilityFormGroup" [updatedLoanPurpose]="serviceability?.serviceabilityFormGroup?.get('loanPurpose')?.value"></app-assets-and-liabilities>
+  </mat-step>
+
+
+
+
+  <mat-step label="Servicing" state="phone">
+    <ng-template matStepperIcon="Phone">
+      <mat-icon>phone</mat-icon>
+    </ng-template>
+   <app-servicing-page [calcServicingFailureReason]="whyCalcFailed" *ngIf="!isLoadingResults" [refinanceServicingStatus]="refinanceStatus" [fullServicingStatus]="smsfCalcStatus" [serviceabilityFormGroup]="serviceability?.serviceabilityFormGroup" (moveToFirst)="switchToFirstStep()"></app-servicing-page>
+  </mat-step>
+
+  <!-- /************************************************************************************************
+  DO NOT DELETE THIS
+  *************************************************************************************************/ -->
+  <!-- <mat-step *ngIf="serviceability?.serviceabilityFormGroup?.get('refinanceCheckPass')?.value !== true" [stepControl]="additionalPersonalInformationComponent?.additionalPersonalInformationFormGroup!" label="Additional PI" state="face">
+    <ng-template matStepperIcon="Face">Additional PI</ng-template>
+    <additional-personal-information [serviceabilityFormGroup]="serviceability?.serviceabilityFormGroup" [personalDetailFormGroup]="personalDetailFormGroup"></additional-personal-information>
+  </mat-step>
+  <mat-step *ngIf="serviceability?.serviceabilityFormGroup?.get('refinanceCheckPass')?.value !== true" [stepControl]="additionalAssetsAndLiabilitiesComponent?.additionalALFormGroup!" label="Additional AL" state="web-asset">
+    <ng-template matStepperIcon="web-asset">
+      <mat-icon>web_asset</mat-icon>
+    </ng-template>
+    <additional-assets-and-liabilities [memberNames]="memberDetailNames"></additional-assets-and-liabilities>
+  </mat-step> -->
+    <mat-step *ngIf="(smsfCalcStatus|async) === true" label="Summary" state="summarize">
+        <ng-template matStepperIcon="summarize">
+          <mat-icon>summarize</mat-icon>
+        </ng-template>
+        <app-summary *ngIf="!isLoadingResults" [serviceabilityFormGroup] = "serviceability?.serviceabilityFormGroup" [personalDetailFormGroup]="personalDetailFormGroup" [assetLiabilityFormGroup]="assetsAndLiability?.assetLiabilityFormGroup"
+        (selectedIndex)="stepper.selectedIndex=$event"></app-summary>
+    </mat-step>
+  <mat-step   label="Valuation" state="quiz">
+    <ng-template matStepperIcon="quiz">
+      <mat-icon>quiz</mat-icon>
+    </ng-template>
+    <app-valuation [propertyAddress]="serviceability?.serviceabilityFormGroup?.value?.address?.text" [propertyValue]="serviceability?.serviceabilityFormGroup?.value?.loanPurpose == 'Purchase' ? serviceability?.serviceabilityFormGroup?.value?.purchasePrice : serviceability?.serviceabilityFormGroup?.value?.currentEstimatedLoanAmount" [loanPurpose]="serviceability?.serviceabilityFormGroup?.value?.loanPurpose" ></app-valuation>
+  </mat-step>
+  <mat-step *ngIf="(smsfCalcStatus|async) === true" [stepControl]="businessPartnerDetailsDeclaration?.businessPartnerDetailsDeclarationFormGroup!" label="Business Partner Declaration" state="business">
+    <ng-template matStepperIcon=" business">
+      <mat-icon> business</mat-icon>
+    </ng-template>
+    <app-business-partner-details-declaration *ngIf="!isLoadingResults" [loanPurpose]="serviceability?.serviceabilityFormGroup?.value?.loanPurpose"></app-business-partner-details-declaration>
+  </mat-step>
+  <mat-step *ngIf="(smsfCalcStatus|async) === true" [stepControl]="brokerdeclaration?.brokerDeclarationFormGroup!" label="Broker Declaration" state="border_color">
+    <ng-template matStepperIcon="border_color">
+      <mat-icon> border_color</mat-icon>
+    </ng-template>
+    <app-broker-declaration *ngIf="!isLoadingResults" (removeClientDeclarationFromFlow)="showOrHideClientDeclaration($event)" (moveToClientDeclaration) = "moveToNextStep()"></app-broker-declaration>
+  </mat-step>
+  <mat-step *ngIf="(smsfCalcStatus|async) === true && (showClientDeclaration|async) === true" label="Client Declaration" state="border_color">
+    <ng-template matStepperIcon="border_color">
+      <mat-icon> border_color</mat-icon>
+    </ng-template>
+    <app-client-declaration *ngIf="!isLoadingResults" [clientDeclarationFormGroup]="clientDeclarationFormGroup"></app-client-declaration>
+  </mat-step>
+
+<mat-step *ngIf="(smsfCalcStatus|async) === true"  label="Credit Decision" state="credit_card">
+
+  <ng-template matStepperIcon="credit_card">
+    <mat-icon>credit_card</mat-icon>
+  </ng-template>
+ <app-credit-decision *ngIf="!isLoadingResults" [preApproval]="serviceability?.serviceabilityFormGroup?.value?.preApproval" [isExpress]="serviceability?.serviceabilityFormGroup?.value.isExpress"></app-credit-decision>
+</mat-step>
+<mat-step *ngIf="(smsfCalcStatus|async) === true"  label="Broker Review" state="feedback">
+
+  <ng-template matStepperIcon="feedback">
+   <mat-icon>feedback</mat-icon>
+  </ng-template>
+  <app-broker-review *ngIf="!isLoadingResults"></app-broker-review>
+</mat-step>
+<mat-step *ngIf="(smsfCalcStatus|async) === true" label="Documents Required" state="library_books">
+  <ng-template matStepperIcon="library_books">
+    <mat-icon>library_books</mat-icon>
+  </ng-template>
+  <app-document-required *ngIf="!isLoadingResults"></app-document-required>
+</mat-step>
+
+</mat-horizontal-stepper>

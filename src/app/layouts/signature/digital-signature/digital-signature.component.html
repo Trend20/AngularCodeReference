@@ -1,0 +1,440 @@
+<form class="container pt-5 pb-5" [formGroup]="activeApplicantDetails">
+  <div class="row d-flex flex-column justify-content-center align-items-center">
+    <mat-icon class="phone-icon"> phonelink_ring</mat-icon>
+    <br />
+    <h2>Enter code</h2>
+    <p>We have sent you an SMS with a 6 digit verification code</p>
+    <p>(OTP) to "Number"</p>
+
+    <mat-card class="otp-box">
+      <ng-otp-input
+        #ngOtpInput
+        (onInputChange)="onOtpChange($event)"
+        [config]="config"
+      ></ng-otp-input>
+    </mat-card>
+    <h3 *ngIf="isResendVisible">
+      Didn't receive an OTP?
+      <a style="color: blue" (click)="onResendClick()"
+        ><strong>Resend OTP</strong></a
+      >
+    </h3>
+
+    <div class="mt-3">
+      <button
+        *ngIf="!isOtpValid"
+        (click)="onValidate()"
+        mat-raised-button
+        color="primary"
+      >
+        Validate
+      </button>
+      <mat-icon *ngIf="isOtpValid" class="check-icon">check_circle</mat-icon>
+    </div>
+  </div>
+  <hr />
+
+  <div *ngIf="isOtpValid">
+    <span><h2>Declarations and Acknowledgement - Applicant(s)</h2></span>
+    <span
+      ><h3>
+        Client making declaration:
+        {{ activeApplicantDetails?.get("applicantFirstName")?.value }}
+
+        {{ activeApplicantDetails?.get("applicantMiddleName")?.value }}
+
+        {{ activeApplicantDetails?.get("applicantLastName")?.value }}
+      </h3></span
+    >
+
+    <table class="table table-borderless;">
+      <tr>
+        <th colspan="3">
+          Have you and/or your spouse/joint applicant or any company with which
+          you were associated:
+        </th>
+        <p>
+          <th colspan="1">YES</th>
+          <th colspan="1">NO</th>
+        </p>
+       
+      </tr>
+      <tr *ngFor="let question of questions; index as i">
+        <th *ngIf="question.type === 'checkbox'" scope="row" colspan="1">
+          {{ i + 1 }}
+        </th>
+
+        <td colspan="2" *ngIf="question.type === 'checkbox'">
+          {{ question.question }}
+          <br />
+
+          <div class="tr-row-top-margin">
+            <mat-label
+              *ngIf="
+                activeApplicantDetails?.get(question?.formControlName)?.value
+              "
+              >If yes to the question above please give details below
+            </mat-label>
+
+            <br />
+
+            <mat-form-field
+              *ngIf="
+                activeApplicantDetails?.get(question?.formControlName)?.value
+              "
+              class="text-area-box"
+              appearance="outline"
+            >
+              <textarea
+                matInput
+                placeholder="Leave a comment"
+                formControlName="{{ question?.formControlName + 'IfYes' }}"
+                rows="5"
+              ></textarea>
+            </mat-form-field>
+
+            <mat-label
+              *ngIf="
+                activeApplicantDetails?.get('declaredBankrupt')?.value && i == 2
+              "
+            >
+              If yes, what was your bankruptcy discharge date if any?
+            </mat-label>
+
+            <mat-form-field
+              *ngIf="
+                activeApplicantDetails?.get('declaredBankrupt')?.value && i == 2
+              "
+              appearance="outline"
+            >
+              <input
+                matInput
+                [matDatepicker]="picker"
+                required
+                formControlName="bankruptDischargeDate"
+                placeholder="DD/MM/YYYY"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </td>
+
+        <mat-radio-group
+          *ngIf="question.type === 'checkbox'"
+          aria-label="Select an option"
+          formControlName="{{ question.formControlName }}"
+        >
+          <td colspan="1">
+            <mat-radio-button [value]="true"></mat-radio-button>
+          </td>
+          <td colspan="1">
+            <mat-radio-button [value]="false"></mat-radio-button>
+          </td>
+        </mat-radio-group>
+      </tr>
+    </table>
+
+    <section class="section-margin">
+      <span
+        ><p>
+          Has any of the applicants (or guarantors) ever been known by any other
+          names?
+
+          <mat-checkbox
+            formControlName="applicantNameChange"
+            class="checkbox-margin"
+          ></mat-checkbox>
+        </p>
+      </span>
+    </section>
+
+    <section class="section-margin">
+      <br />
+
+      <div
+        *ngIf="activeApplicantDetails?.get('applicantNameChange')?.value"
+        class="row"
+      >
+        <div class="col-8">
+          <mat-label
+            >Reason for Applicant Former Names: (eg maiden name, married name
+            etc)</mat-label
+          >
+          <mat-form-field class="text-area-box" appearance="outline">
+            <input
+              matInput
+              formControlName="applicantReasonForFormerName"
+              type="text"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-4">
+          <mat-label>Date of change </mat-label>
+          <mat-form-field appearance="outline" [style.width.%]="100">
+            <!-- <mat-label>Date</mat-label> -->
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="applicantDateOfNameChange"
+              required
+              placeholder="DD/MM/YYYY"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- <div
+        *ngIf="activeApplicantDetails?.get('guarantorNameChange')?.value"
+        class="row"
+      >
+        <div class="col-8">
+          <mat-label
+            >Reason for Guarantor Former Names: (eg maiden name, married name
+            etc)</mat-label
+          >
+          <mat-form-field class="text-area-box" appearance="outline">
+            <input
+              matInput
+              formControlName="guarantorReasonForFormerName"
+              type="text"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-4">
+          <mat-label>Date of change </mat-label>
+          <mat-form-field appearance="outline" [style.width.%]="100">
+            <input
+              matInput
+              [matDatepicker]="picker"
+              required
+              formControlName="guarantorDateOfNameChange"
+              placeholder="DD/MM/YYYY"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div> -->
+    </section>
+
+    <span><h2>Electronic Delivery of Loan and Security Documentation</h2></span>
+    <span
+      ><p>
+        Nomination and electronic delivery (please check applicable boxes)
+      </p></span
+    >
+    <span
+      ><p>
+        By signing and providing your email on this form, you consent to us and
+        the Funder giving you notices and other documents in connection with our
+        dealings with you by email. You understand that upon your giving of this
+        consent
+      </p></span
+    >
+    <ol>
+      <li>
+        we may no longer send paper copies of notices and other documents to
+        you;
+      </li>
+      <li>
+        you should regularly check your nominated e-mail address below for
+        notices and other documents;
+      </li>
+      <li>
+        you may withdraw your consent to the giving of notices and other
+        documents by e-mail at any time;
+      </li>
+      <li>
+        you have facilities to enable you to print the notice or other document
+        that we send to you by email if you desire;
+      </li>
+      <li>
+        we will: a) make all notices and other documents available for a period
+        of time on a password protected section of our website for retrieval by
+        you, or b) we will send you notices and other documents by email;
+      </li>
+      <li>
+        if the information is displayed on our website we will promptly send you
+        an email address nominated below notifying you that information is
+        available for retreival on our website and notify you of the nature of
+        the information;
+      </li>
+      <li>
+        we will no longer send paper copies of notices and other documents.
+      </li>
+    </ol>
+
+    <mat-radio-group formControlName="delivery">
+    <span
+      >I direct for the loan and security documentation to be delivered by email
+      to the address provided with this application to
+
+        <mat-radio-button class="tp-radio-button" value="deliveryEmailMyself"
+          >Myself</mat-radio-button
+        >
+        <mat-radio-button class="tp-radio-button" value="deliveryEmailSolicitor"
+          >Solicitor</mat-radio-button
+        >
+        <mat-radio-button class="tp-radio-button" value="deliveryEmailBroker"
+          >My broker</mat-radio-button
+        >
+    
+    </span>
+    
+    <br />
+    <span
+      >Alternatively, the documents are to be posted to
+
+      
+        <mat-radio-button class="tp-radio-button" value="postedAddress"
+          >Myself</mat-radio-button
+        >
+        <mat-radio-button class="tp-radio-button" value="ostedSolicitor"
+          >my Solicitor</mat-radio-button
+        >
+     
+    </span>
+  </mat-radio-group>
+
+    <br />
+
+    <div class="section-margin">
+      <span> Please review the Privacy and collection notice</span>
+    </div>
+
+    <div class="row section-margin">
+      <button mat-raised-button color="basic" (click)="openDialog()">
+        Click here for the Privacy and collection notice
+      </button>
+    </div>
+
+    <div class="row mt-5">
+      <mat-card class="rules-box">
+        <span
+          ><p>
+            <strong>
+              {{ activeApplicantDetails?.get("applicantFirstName")?.value }},
+              only if you wish to proceed with your credit application, you will
+              need to give the following confirmation, acknowledgements and
+              declarations (By ticking/ checking all the boxes below and
+              electronically signing your credit application):</strong
+            >
+          </p></span
+        >
+        <br />
+
+        <table class="table table-borderless;">
+          <tr>
+            <td>
+              <mat-checkbox
+                formControlName="confirmCheckBox"
+                class="example-margin"
+              ></mat-checkbox>
+            </td>
+            <td>
+              By checking this box, I submit the credit application and in so
+              doing: I confirm, decare and acknowledge that all the information
+              (including the declarations, confirmations and acknowledgements
+              given in the credit application) and any documents I have provided
+              are accurate, complete and not misleading or deceptive in any way.
+              I acknowledge that if my credit application is a joint
+              application, the other joint applicant(s) and guarantors if
+              applicable must among other required steps) also review, confirm
+              and approve this credit application before it can be processed. I
+              acknowledge that my confirmations, acknowledgements and
+              declarations are given for the benefit of and maybe relied upon by
+              the relevant Credit Provider and any other party associated with
+              my credit application including, without limitations, other credit
+              assistance providers such as Mortgage Managers and Lenders
+              Mortgage insurers.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <mat-checkbox
+                formControlName="over18CheckBox"
+                class="example-margin"
+              ></mat-checkbox>
+            </td>
+            <td>
+              By checking this box, I declare that I am, or am over 18 years of
+              age and that I have read, understood and accepted the Privacy
+              Policy in relation to the collection, use and disclosure of my
+              personal information, which includes obtaining / sharing personal
+              information (including 'credit information' and 'credible
+              eligibility information as defined in the Privacy Act 1988(Cth)
+              about me with, among other organizations, a Credit Report Body
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <mat-checkbox
+                formControlName="eSignatureCheckBox"
+                class="example-margin"
+              ></mat-checkbox>
+            </td>
+            <td>
+              I agree to apply my electronic signature to the Loan Application
+              form as applicant and guarantor
+            </td>
+          </tr>
+        </table>
+      </mat-card>
+    </div>
+
+    <div class="row justify-content-around section-margin">
+      <div class="col-8">
+        <mat-card class="card-border">
+          <p>Signature</p>
+
+          <div class="col-10">
+            <mat-form-field class="w-100">
+              <mat-label>Select Prefrered Signature Font</mat-label>
+              <mat-select
+                formControlName="applicantSignature"
+              >
+                <mat-option *ngFor="let font of fonts" [value]="font.key"
+                  >{{ font.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-10">
+            <mat-card class="card-border">
+              <div style="padding-top: 30px; padding-bottom: 20px">
+                <h1 [ngStyle]="{ 'font-family': signatureFontFamilyKey }">
+                  {{
+                    activeApplicantDetails?.get("applicantFirstName")?.value +
+                      "  " +
+                      activeApplicantDetails?.get("applicantLastName")?.value
+                  }}
+                </h1>
+              </div>
+            </mat-card>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="row justify-content-end">
+      <button (click)=(saveData()) mat-raised-button color="primary">Submit</button>
+    </div>
+  </div>
+</form>

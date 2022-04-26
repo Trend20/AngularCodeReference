@@ -1,0 +1,6 @@
+.example-tel-input-container {
+  display: flex;
+}
+:host.floating {
+  opacity: 1;
+}

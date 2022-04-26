@@ -1,0 +1,11 @@
+<mat-card class="pdf-container"
+  ><pdf-viewer
+    [src]="pdfSrc"
+    [original-size]="false"
+    [fit-to-page]="true"
+  ></pdf-viewer
+></mat-card>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Proceed</button>
+</mat-dialog-actions>

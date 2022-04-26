@@ -1,0 +1,12 @@
+.file-input {
+  display: none;
+}
+
+.upload-btn {
+  border: none;
+  color: rgb(32, 161, 178);
+  outline: none;
+  cursor: pointer;
+  background: none;
+  font-size: 1rem;
+}

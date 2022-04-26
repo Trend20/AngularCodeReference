@@ -1,0 +1,45 @@
+  <div class="col-lg-12 header-contents">
+    <div class="top-contents">
+      <div class="btn-logo ml-3">
+        <div class="button">
+          <button type="button" id="homepage-btn" (click)="goToHomepage()">Go To Homepage</button>
+        </div>
+        <div class="logo">
+          <img src="/assets/images/logo6.png" alt="logo">
+        </div>
+      </div>
+    <div class="bottom-content">
+      <div class="col">
+        <div class="row d-flex align-items-center ml-2 mt-3">
+          <p class="font-weight-bold">Application no: </p>
+          <p class="ml-2">{{ applicationNumber }}</p>
+        </div>
+        <div class="row d-flex align-items-center ml-2 details">
+          <p class="font-weight-bold">Applicants names:</p>
+          <p class="ml-2" *ngFor="let name of memberNames; let i = index;">{{name.lastName == null ? name.firstName : name.lastName +' '+ name.firstName }}<span *ngIf="i != memberNames.length-1">,</span></p>
+        </div>
+        <div class="row d-flex align-items-center ml-2 details">
+          <p class="font-weight-bold">Loan Purpose: </p>
+          <p class="ml-2">{{ loanPurpose }}</p>
+        </div>
+        <div class="row d-flex align-items-center ml-2 details">
+          <p class="font-weight-bold">Security Address:</p>
+          <p class="ml-2"> {{ securityAddress }}</p>
+        </div>
+      </div>
+      <div class="user-details">
+        <div class="credentials">
+            <span> <mat-label>Hi {{ brokerName }}</mat-label><button mat-button (click)="logout()"><mat-icon>logout</mat-icon></button></span>
+            <span><mat-label>BP Number &nbsp; [BP Accred {{brokerCode}} ]</mat-label></span>
+        </div>
+        <!-- <div class="icons">
+                <button class="bg-secondary btn-outline-light" aria-label="Contact"  matTooltip="Contact">
+                  <mat-icon>phone</mat-icon>
+                </button>
+                <button class="bg-secondary btn-outline-light" aria-label="Help"  matTooltip="Help">
+                  <mat-icon>help</mat-icon>
+                </button>
+        </div> -->
+      </div>
+    </div>
+  </div>

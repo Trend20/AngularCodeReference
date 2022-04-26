@@ -1,0 +1,16 @@
+.mt-50 {
+    margin-top: 50px;
+}
+
+td.mat-cell{
+    border-bottom-style: none;
+}
+
+th.mat-header-cell{
+    border-bottom-style: none;
+}
+
+.mat-icon-help {
+    font-size: 13px;
+    cursor: pointer;
+  }

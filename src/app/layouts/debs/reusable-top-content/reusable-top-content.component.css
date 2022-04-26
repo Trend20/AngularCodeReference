@@ -1,0 +1,139 @@
+.header-contents {
+  background-color: #fff;
+  margin-bottom: 0px;
+  padding-top: 20px;
+}
+
+.top-contents {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.btn-logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.button {
+  display: flex;
+  width: 50%;
+}
+
+#homepage-btn {
+  align-items: center;
+  background-color: #0a66c2;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto,
+    "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell,
+    "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+#homepage-btn:hover,
+#homepage-btn:focus {
+  background-color: #16437e;
+  color: #ffffff;
+}
+
+#homepage-btn:active {
+  background: #09223b;
+  color: rgb(255, 255, 255, 0.7);
+}
+
+#homepage-btn:disabled {
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.logo img {
+  align-items: center;
+  margin-right: 30px;
+  cursor: pointer;
+}
+
+.bottom-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.applicant-details {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.user-details {
+  display: flex;
+  width: 30%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.credentials {
+  display: flex;
+  flex-direction: column;
+  opacity: 0.6;
+  margin-right: 20px;
+}
+
+.icons {
+  display: flex;
+  margin-right: 30px;
+}
+
+.icons button {
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border: none;
+}
+.icons mat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.details {
+  margin-top: -10px !important;
+}

@@ -1,0 +1,17 @@
+{
+  "states": {
+    "NSW": "New South Wales",
+    "QLD": "Queensland",
+    "ACT": "Australian Capital Territory",
+    "VIC": "Victoria",
+    "TAS": "Tasmania",
+    "WA": "Western Australia",
+    "NT": "Northern Territory",
+    "SA": "South Australia"
+  },
+  "localities": {
+    "ST": "Street",
+    "CCT": "Circuit",
+    "RD": "Road"
+  }
+}

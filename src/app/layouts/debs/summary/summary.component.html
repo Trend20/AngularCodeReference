@@ -1,0 +1,779 @@
+<div class="card-body">
+  <div class="row mt-3">
+    <div class="col-sm-3">
+      <div class="list-group" role="tablist">
+        <a
+          class="list-group-item list-group-item-action {{
+            summaryContent == 'service' ? 'active' : ''
+          }}"
+          (click)="showSummary('service')"
+          role="tab"
+          >Serviceability Summary</a
+        >
+        <a
+          class="list-group-item list-group-item-action {{
+            summaryContent == 'loan' ? 'active' : ''
+          }}"
+          (click)="showSummary('loan')"
+          role="tab"
+          >Loan Details Summary</a
+        >
+        <a
+          class="list-group-item list-group-item-action {{
+            summaryContent == 'personal' ? 'active' : ''
+          }}"
+          (click)="showSummary('personal')"
+          role="tab"
+        >
+          Personal Details Summary</a
+        >
+
+        <a
+          class="list-group-item list-group-item-action {{
+            summaryContent == 'app' ? 'active' : ''
+          }}"
+          (click)="showSummary('app')"
+          role="tab"
+        >
+          Applicants Personal Information</a
+        >
+
+        <a
+          class="list-group-item list-group-item-action {{
+            summaryContent == 'asset' ? 'active' : ''
+          }}"
+          (click)="showSummary('asset')"
+          role="tab"
+        >
+          Assets and Liabilities Summary
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div *ngIf="summaryContent == 'service'">
+        <table class="table table-bordered">
+          <tr>
+            <th colspan="2">
+              <div class="d-flex justify-content-between">
+                <div>Summary of Loan Servicing</div>
+                <div>
+                  <button
+                    class="btn-sm bg-primary btn-outline-light button-length"
+                    aria-label="Edit"
+                    mat-button
+                    (click)="setSelectedIndex()"
+                  >
+                    Edit Application
+                  </button>
+                </div>
+              </div>
+            </th>
+          </tr>
+          <tr>
+            <td>Purpose</td>
+            <td>{{ serviceabilityFormGroup?.value?.loanPurpose }}</td>
+          </tr>
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Pre-Approval</td>
+            <td>{{ serviceabilityFormGroup?.value?.preApproval }}</td>
+          </tr>
+          <tr>
+            <td>Property Address</td>
+            <td>
+              {{ getCorrectAddress(serviceabilityFormGroup?.value?.address) }}
+            </td>
+          </tr>
+          <tr
+            *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Refinance'"
+          >
+            <td>Have you received 1 year of continuous rental income?</td>
+            <td>{{ serviceabilityFormGroup?.value?.isIncomeContinuous }}</td>
+          </tr>
+          <tr
+            *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Refinance'"
+          >
+            <td>Have you paid 2 years of loan repaymenmts by the due date?</td>
+            <td>{{ serviceabilityFormGroup?.value?.twoYearLoanRepayment }}</td>
+          </tr>
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Purchase amount</td>
+            <td>
+              {{ serviceabilityFormGroup?.value?.purchasePrice?.currencyValue }}
+            </td>
+          </tr>
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Estimated weekly rent</td>
+            <td>
+              {{
+                serviceabilityFormGroup?.value?.estimatedWeeklyRent
+                  ?.currencyValue
+              }}
+            </td>
+          </tr>
+          <tr
+            *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Refinance'"
+          >
+            <td>Estimated weekly rent</td>
+            <td>
+              {{
+                serviceabilityFormGroup?.value?.refinanceEstimatedWeeklyRent
+                  ?.currencyValue
+              }}
+            </td>
+          </tr>
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Stamp Duty</td>
+            <td>
+              {{ serviceabilityFormGroup?.value?.stampDuty?.currencyValue }}
+            </td>
+          </tr>
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Other cost</td>
+            <td>
+              {{ serviceabilityFormGroup?.value?.otherCost?.currencyValue }}
+            </td>
+          </tr>
+
+          <tr *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Purchase'">
+            <td>Total Funds required</td>
+            <td>
+              {{ serviceabilityFormGroup?.value?.totalFunds?.currencyValue }}
+            </td>
+          </tr>
+          <tr
+            *ngIf="serviceabilityFormGroup?.value?.loanPurpose == 'Refinance'"
+          >
+            <td>Funds to contribute</td>
+            <td>
+              {{
+                serviceabilityFormGroup?.value?.currentEstimatedLoanAmount
+                  ?.currencyValue
+              }}
+            </td>
+          </tr>
+          <tr>
+            <td>Total loan amount</td>
+            <td>
+              {{
+                serviceabilityFormGroup?.value?.totalLoanFromSubAccounts
+                  ?.currencyValue
+              }}
+            </td>
+          </tr>
+        </table>
+        <!-- <div class="col">
+          <button
+            class="btn-sm btn-outline-primary float-none"
+            mat-button
+            (click)="setSelectedIndex(0)"
+          >
+            Edit
+          </button>
+        </div> -->
+      </div>
+      <div *ngIf="summaryContent == 'loan'">
+        <div
+          *ngFor="
+            let subAccount of serviceabilityFormGroup?.value?.subAccounts;
+            let i = index
+          "
+        >
+          <table class="table table-bordered">
+            <tr>
+              <th *ngIf="i === 0" colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Summarry of Primary Account Details</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+              <th *ngIf="i > 0" colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Summary of Sub Account {{ i }} Details</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <td>Loan amount</td>
+              <td>{{ subAccount?.loanAmount?.currencyValue }}</td>
+            </tr>
+            <tr>
+              <td>Rate Type</td>
+              <td>{{ subAccount?.rateType?.name }}</td>
+            </tr>
+            <tr>
+              <td>Loan Term</td>
+              <td>{{ subAccount?.loanTerm }}</td>
+            </tr>
+            <tr>
+              <td>Repayment Type</td>
+              <td>{{ subAccount?.repaymentType?.name }}</td>
+            </tr>
+            <tr>
+              <td>LVR</td>
+              <td>{{ subAccount?.loanValueRatio }}</td>
+            </tr>
+            <tr *ngIf="subAccount.rateType == 'Variable'">
+              <td>Offset</td>
+              <td>{{ subAccount?.offset }}</td>
+            </tr>
+            <tr *ngIf="subAccount.rateType?.name == 'Fixed'">
+              <td>Fixed for how long</td>
+              <td>{{ subAccount?.fixedInterestRatePeriod }}</td>
+            </tr>
+
+            <tr *ngIf="subAccount?.repaymentType?.name == 'Interest only'">
+              <td>Interest Only period</td>
+              <td>{{ subAccount?.interestOnlyPeriod }}</td>
+            </tr>
+
+            <tr>
+              <td>Interest Rate</td>
+              <td>{{ subAccount?.interestRate }}</td>
+            </tr>
+          </table>
+        </div>
+        <div
+          *ngFor="
+            let member of serviceabilityFormGroup?.value?.members;
+            let i = index
+          "
+        >
+          <table class="table table-bordered">
+            <tr>
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Summary of Member {{ i + 1 }} Income Details</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <td>First name</td>
+              <td>{{ member?.firstName }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                member?.applicantType?.name != '' &&
+                member?.applicantType?.name != null
+              "
+            >
+              <td>Applicant Type</td>
+              <td>{{ member?.applicantType?.name }}</td>
+            </tr>
+
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>PAYG Type</td>
+              <td>{{ member?.paygType?.name }}</td>
+            </tr>
+
+            <tr *ngIf="member?.applicantType?.name == 'Self-employed'">
+              <td>ABN Number</td>
+              <td>{{ member?.abnNumber?.number }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'Self-employed'">
+              <td>Company Name</td>
+              <td>{{ member?.companyName }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Employment start date</td>
+              <td>{{ member?.paygStartDate | date : 'dd/MM/yyyy' : 'AEST' }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'Self-employed'">
+              <td>Estimated Annual Super contribution</td>
+              <td>
+                {{ member?.estimatedAnnualSuperContribution?.currencyValue }}
+              </td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Employer super</td>
+              <td>{{ member?.employerSuperContribution?.currencyValue }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Frequency</td>
+              <td>{{ member?.additionalSuperContributionFrequency?.name }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Additional super contribution</td>
+              <td>{{ member?.additionalSuperContribution?.currencyValue }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'Not employed'">
+              <td>Not Employed Type</td>
+              <td>{{ member?.notEmployedType?.name }}</td>
+            </tr>
+            <tr *ngIf="member?.notEmployedType?.name == 'Retired'">
+              <td>Retired Type</td>
+              <td>{{ member?.retiredType?.name }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'Not employed'">
+              <td>Estimated Annual Super contribution</td>
+              <td>
+                {{
+                  member?.notEmployedEstimatedAnnualSuperContribution
+                    ?.currencyValue
+                }}
+              </td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Employer ABN</td>
+              <td>{{ member?.employerAbn }}</td>
+            </tr>
+            <tr *ngIf="member?.applicantType?.name == 'PAYG'">
+              <td>Employer Name</td>
+              <td>{{ member?.employerName }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div *ngIf="summaryContent == 'personal'">
+        <!-- <div class="col">
+          <button
+            class="btn-sm btn-outline-primary float-none"
+            mat-button
+            (click)="setSelectedIndex(1)"
+          >
+            Edit
+          </button>
+        </div> -->
+        <table class="table table-bordered">
+          <tr>
+            <th colspan="2">
+              <div class="d-flex justify-content-between">
+                <div>Summary of Loan General Personal Details</div>
+                <div>
+                  <button
+                    class="btn-sm bg-primary btn-outline-light button-length"
+                    aria-label="Edit"
+                    mat-button
+                    (click)="setSelectedIndex()"
+                  >
+                    Edit Application
+                  </button>
+                </div>
+              </div>
+            </th>
+          </tr>
+          <tr>
+            <td>SMSF Trustee Name</td>
+            <td>{{ personalDetailFormGroup?.value?.propertyTrustName }}</td>
+          </tr>
+          <tr>
+            <td>SMSF Trustee ACN</td>
+            <td>
+              {{ personalDetailFormGroup?.value?.smsfTrusteeAcn?.number }}
+            </td>
+          </tr>
+          <tr>
+            <td>SMSF Trustee registered address</td>
+            <td>{{ personalDetailFormGroup?.value?.smsfTrusteeAddress }}</td>
+          </tr>
+          <tr>
+            <td>SMSF Trustee registration date</td>
+            <td>
+              {{ personalDetailFormGroup?.value?.smsfTrusteeRegistrationDate | date : 'dd/MM/yyyy' : 'AEST' }}
+            </td>
+          </tr>
+          <tr>
+            <td>SMSF name</td>
+            <td>{{ personalDetailFormGroup?.value?.smsfName }}</td>
+          </tr>
+          <tr>
+            <td>SMSF ABN</td>
+            <td>{{ personalDetailFormGroup?.value?.smsfAbn?.number }}</td>
+          </tr>
+          <tr>
+            <td>SMSF Address</td>
+            <td>{{ personalDetailFormGroup?.value?.address }}</td>
+          </tr>
+          <tr>
+            <td>Property Trustee name</td>
+            <td>{{ personalDetailFormGroup?.value?.propertyTrustName }}</td>
+          </tr>
+          <tr>
+            <td>Property Trustee ACN</td>
+            <td>
+              {{ personalDetailFormGroup?.value?.propertyTrusteeACN?.number }}
+            </td>
+          </tr>
+          <tr>
+            <td>Property Trustee registered address</td>
+            <td>
+              {{ personalDetailFormGroup?.value?.propertyTrusteeAddress }}
+            </td>
+          </tr>
+          <tr>
+            <td>Property Trustee registration date</td>
+            <td>
+              {{
+                personalDetailFormGroup?.value?.propertyTrusteeRegistrationDate | date : 'dd/MM/yyyy' : 'AEST'
+              }}
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div *ngIf="summaryContent == 'app'">
+        <!-- <div class="col">
+          <button
+            class="btn-sm btn-outline-primary float-none"
+            mat-button
+            (click)="setSelectedIndex(1)"
+          >
+            Edit
+          </button>
+        </div> -->
+
+        <div
+          *ngFor="
+            let memberDetails of personalDetailFormGroup?.value
+              ?.memberDetailList;
+            let i = index
+          "
+        >
+          <table class="table table-bordered">
+            <tr>
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Summary of Member {{ i + 1 }} Personal Information</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <td>Fullname</td>
+              <td>
+                {{ memberDetails.title }} {{ memberDetails?.firstName }}
+                {{ memberDetails?.middleName }} {{ memberDetails?.lastName }}
+              </td>
+            </tr>
+            <tr>
+              <td>Gender</td>
+              <td>{{ memberDetails?.gender }}</td>
+            </tr>
+            <tr>
+              <td>Date of Birth</td>
+              <td>{{ memberDetails?.dateOfBirth | date : 'dd/MM/yyyy' : 'AEST' }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                memberDetails?.dataEntryOption == '4' ||
+                memberDetails?.dataEntryOption == '2'
+              "
+            >
+              <td>Passport Number</td>
+              <td>{{ memberDetails?.passportNumber }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                memberDetails?.dataEntryOption == '4' ||
+                memberDetails?.dataEntryOption == '2'
+              "
+            >
+              <td>Country of Issue</td>
+              <td>{{ memberDetails?.countryOfIssue }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                memberDetails?.dataEntryOption == '1' ||
+                memberDetails?.dataEntryOption == '3'
+              "
+            >
+              <td>License number</td>
+              <td>{{ memberDetails?.licenseNumber }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                memberDetails?.dataEntryOption == '1' ||
+                memberDetails?.dataEntryOption == '3'
+              "
+            >
+              <td>State of Issue</td>
+              <td>{{ memberDetails?.stateOfIssue }}</td>
+            </tr>
+            <tr>
+              <td>Citizen/Permanent</td>
+              <td>{{ memberDetails?.citizenOrResident }}</td>
+            </tr>
+            <tr>
+              <td>Country of Residence</td>
+              <td>{{ memberDetails?.country }}</td>
+            </tr>
+            <tr>
+              <td>Applicant Address</td>
+              <td>{{ getCorrectAddress(memberDetails?.address) }}</td>
+            </tr>
+            <tr>
+              <td>Mobile Phone Number</td>
+              <td>{{ memberDetails?.mobilePhoneNumber }}</td>
+            </tr>
+            <tr>
+              <td>Home Phone Number</td>
+              <td>{{ memberDetails?.homePhoneNumber }}</td>
+            </tr>
+            <tr>
+              <td>Email Address</td>
+              <td>{{ memberDetails?.emailAddress }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="summaryContent == 'asset'">
+        <div
+          *ngFor="
+            let realEstateDetails of assetLiabilityFormGroup?.value
+              ?.realEstateList;
+            let i = index
+          "
+        >
+          <!-- <label>Real Estate Assets {{i + 1}}</label> -->
+          <table class="table table-bordered">
+
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Summary of Real Estate Asset no. {{ i + 1 }}</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+
+            <tr>
+              <td>Address</td>
+              <td>{{ realEstateDetails.address?.text }}</td>
+            </tr>
+            <tr>
+              <td>Property Value</td>
+              <td>{{ realEstateDetails.amount?.currencyValue }}</td>
+            </tr>
+            <tr>
+              <td>Rental Income</td>
+              <td>{{ realEstateDetails.rentAmount?.currencyValue }}</td>
+            </tr>
+            <tr>
+              <td>Rental Frequency</td>
+              <td>{{ realEstateDetails.rentFrequency?.name }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- savings table -->
+
+        <div
+          *ngFor="
+            let financialDetails of assetLiabilityFormGroup?.value
+              ?.financialAssetList;
+            let i = index
+          "
+        >
+          <!-- <label>Saving and investment {{i + 1}}</label> -->
+          <table class="table table-bordered">
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Saving and Investment Asset no. {{ i + 1 }}</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+            </th>
+            <tr>
+              <td>Asset Type</td>
+              <td>{{ financialDetails.assetType?.name }}</td>
+            </tr>
+            <tr>
+              <td>Institution</td>
+              <td>{{ financialDetails.financialInstitution?.name }}</td>
+            </tr>
+            <tr>
+              <td>Current Balance</td>
+              <td>{{ financialDetails.currentBalance?.currencyValue }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- deposit table -->
+
+        <div
+          *ngFor="
+            let depositDetails of assetLiabilityFormGroup?.value
+              ?.depositPaidList;
+            let i = index
+          "
+        >
+          <!-- <label>Deposit paid on property purchase {{i + 1}}</label> -->
+          <table class="table table-bordered">
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Deposit paid on property purchase no. {{ i + 1 }}</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            <tr>
+              <td>Deposit paid</td>
+              <td>{{ depositDetails.amount?.currencyValue }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- liabilities table -->
+
+        <div
+          *ngFor="
+            let liabilityDetails of assetLiabilityFormGroup?.value
+              ?.liabilityList;
+            let i = index
+          "
+        >
+          <!-- <label>Liabilities {{i + 1}}</label> -->
+          <table class="table table-bordered">
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Liability no. {{ i + 1 }}</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            <tr>
+              <td>Lender</td>
+              <td>{{ liabilityDetails.lenderName?.name }}</td>
+            </tr>
+            <tr>
+              <td>Balance</td>
+              <td>{{ liabilityDetails.outstandingBalance?.currencyValue }}</td>
+            </tr>
+            <tr>
+              <td>Repayment</td>
+              <td>
+                {{ liabilityDetails.minimumMonthlyPayment?.currencyValue }}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- expenses table -->
+
+        <div
+          *ngFor="
+            let expenseDetails of assetLiabilityFormGroup?.value?.expenseList;
+            let i = index
+          "
+        >
+          <!-- <label>Expenses {{i + 1}}</label> -->
+          <table class="table table-bordered">
+              <th colspan="2">
+                <div class="d-flex justify-content-between">
+                  <div>Expense no. {{ i + 1 }}</div>
+                  <div>
+                    <button
+                      class="btn-sm bg-primary btn-outline-light button-length"
+                      aria-label="Edit"
+                      mat-button
+                      (click)="setSelectedIndex()"
+                    >
+                      Edit Application
+                    </button>
+                  </div>
+                </div>
+              </th>
+            <tr>
+              <td>Expense Type</td>
+              <td>{{ expenseDetails.expenseType?.description }}</td>
+            </tr>
+            <tr>
+              <td>Annual Running Cost</td>
+              <td>{{ expenseDetails.annualRunningCosts?.currencyValue }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- navigation buttons -->
+<div class="mt-1 row"></div>
+<div class="mt-1">
+  <button
+    class="btn-sm btn-outline-primary float-right"
+    mat-button
+    matStepperNext
+  >
+    Next
+  </button>
+  <!-- <button class="btn-sm btn-outline-primary float-right" mat-button>
+    Confirm
+  </button> -->
+</div>
+<div class="row">
+  <div class="mt-1">
+    <button class="btn-sm btn-outline-primary" mat-button matStepperPrevious>
+      Back
+    </button>
+  </div>
+</div>

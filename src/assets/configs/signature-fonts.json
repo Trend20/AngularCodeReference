@@ -1,0 +1,12 @@
+[
+  {"key": "MaradonaSignature", "value": "Maradona Signature"},
+  {"key": "JuliettaSignature", "value": "Julietta Signature"},
+  {"key": "AndersonSignatureItalic", "value": "Anderson Signature Italic"},
+  { "key": "Anthoni", "value": "Anthoni Signature" },
+  { "key": "Gisellia", "value": "Gisellia Signature" },
+  { "key": "MungSignature", "value": "Mung Signature" },
+  {"key": "AndersonSignature", "value": "Anderson Signature"},
+  { "key": "SignaturexDemoRegular", "value": "Signaturex Regular" },
+  { "key": "Talesian", "value": "Talesian" },
+  {"key": "AndersonSignatureSwash", "value": "Anderson Signature Swash"}
+]

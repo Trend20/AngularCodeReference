@@ -1,0 +1,323 @@
+<form class="card-body" [formGroup]="servicingPageFormGroup">
+  <ng-template matStepLabel>Servicing</ng-template>
+  <p class="h2">Servicing</p>
+
+  <div class="col-md-10">
+    <div class="row intro">
+      <p>To review servicing, please click on the below links.</p>
+    </div>
+
+    <div class="row w-100">
+      <div class="col-lg-8">
+        <div class="row w-100 mt-3">
+          <div *ngIf="isRefinanceOrNot()" class="col-sm-3">
+            <h2>Ezy Express Calculator</h2>
+          </div>
+
+          <div *ngIf="!isRefinanceOrNot()" class="col-sm-3">
+            <h2>Full SMSF Calculator</h2>
+          </div>
+
+          <div
+            class="col-sm-6"
+            *ngIf="
+              (isRefinanceOrNot() && (refinanceServicingStatus | async)) ||
+              (!isRefinanceOrNot() &&
+                !isRefinanceOrNot() &&
+                (fullServicingStatus | async))
+            "
+          >
+            <h2 class="green-color">
+              <b> CONGRATULATIONS </b>
+            </h2>
+          </div>
+
+          <div
+            class="col-sm-6"
+            *ngIf="
+              (isRefinanceOrNot() && !(refinanceServicingStatus | async)) ||
+              (!isRefinanceOrNot() &&
+                !isRefinanceOrNot() &&
+                !(fullServicingStatus | async))
+            "
+          >
+            <h2 class="red-color">
+              <b> FAILED </b>
+            </h2>
+
+            <div>
+              {{ calcServicingFailureReason?.value }}
+            </div>
+          </div>
+
+          <div
+            class="col-sm-3"
+            *ngIf="
+              (isRefinanceOrNot() && !(refinanceServicingStatus | async)) ||
+              (!isRefinanceOrNot() &&
+                !isRefinanceOrNot() &&
+                !(fullServicingStatus | async))
+            "
+          >
+            <button
+              class="btn-sm bg-primary btn-outline-light button-length"
+              aria-label="Edit"
+              mat-button
+              (click)="editDetails()"
+            >
+              Edit Application
+            </button>
+          </div>
+
+          <div
+            class="col-sm-3"
+            *ngIf="
+              (isRefinanceOrNot() && (refinanceServicingStatus | async)) ||
+              (!isRefinanceOrNot() &&
+                !isRefinanceOrNot() &&
+                (fullServicingStatus | async))
+            "
+          >
+            <button
+              class="btn-sm bg-primary btn-outline-light button-length-proceed"
+              aria-label="Next"
+              matStepperNext
+              mat-button
+            >
+              Click to Proceed
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            (isRefinanceOrNot() && (refinanceServicingStatus | async)) ||
+            (!isRefinanceOrNot() &&
+              !isRefinanceOrNot() &&
+              (fullServicingStatus | async))
+          "
+        >
+          <div class="row w-100 mt-5">
+            <div *ngIf="showCalc" class="col-sm-9">
+              <p>
+                Should you need to view the Calculator Inputs and Output values
+                click left
+              </p>
+            </div>
+
+            <div *ngIf="!showCalc" class="col-sm-9">
+              <p>
+                Should you need to hide the Calculator Inputs and Output values
+                click left
+              </p>
+            </div>
+
+            <div *ngIf="showCalc" class="col-sm-3">
+              <button
+                (click)="showCalcToggle()"
+                class="btn-sm bg-primary btn-outline-light button-length-proceed"
+                mat-button
+              >
+                Show calculator Values
+              </button>
+            </div>
+
+            <div *ngIf="!showCalc" class="col-sm-3">
+              <button
+                (click)="showCalcToggle()"
+                class="btn-sm bg-primary btn-outline-light button-length-proceed"
+                mat-button
+              >
+                Hide Calculator Values
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="
+            (isRefinanceOrNot() && !(refinanceServicingStatus | async)) ||
+            (!isRefinanceOrNot() &&
+              !isRefinanceOrNot() &&
+              !(fullServicingStatus | async))
+          "
+        >
+          <div class="row w-100 mt-5">
+            <div *ngIf="showCalc" class="col-sm-9">
+              <p>
+                Should you need to view the Calculator Inputs and Output values
+                click left
+              </p>
+            </div>
+
+            <div *ngIf="!showCalc" class="col-sm-9">
+              <p>
+                Should you need to hide the Calculator Inputs and Output values
+                click left
+              </p>
+            </div>
+            <div *ngIf="showCalc" class="col-sm-3">
+              <button
+                (click)="showCalcToggle()"
+                class="btn-sm bg-primary btn-outline-light button-length"
+                mat-button
+              >
+                Calculator Values
+              </button>
+            </div>
+
+            <div *ngIf="!showCalc" class="col-sm-3">
+              <button
+                (click)="showCalcToggle()"
+                class="btn-sm bg-primary btn-outline-light button-length"
+                mat-button
+              >
+                Calculator
+              </button>
+            </div>
+          </div>
+
+          <div class="row w-100 mt-5">
+            <div class="col-sm-9">
+              <p>
+                Should you need assistance in this matter, please call your
+                Account Manager <br /><strong>{{ currentUser?.name }}??</strong
+                >on (Number)??
+              </p>
+            </div>
+            <div class="col-sm-3">
+              <button
+                (click)="sendEmailToAccountManager()"
+                class="btn-sm bg-primary btn-outline-light button-length"
+                mat-button
+              >
+                Send E-mail
+              </button>
+            </div>
+          </div>
+          <div class="row w-100 mt-3">
+            <div class="col-sm-12">
+              <p>
+                Should you wish to not proceed, please click this link.
+                <a href="#">Not Proceeding</a>
+              </p>
+            </div>
+          </div>
+          <div class="row w-100 mt-3">
+            <div class="col-sm-12">
+              <p>
+                All applications will automatically close if not progressed
+                within
+                <b>30 calendar days.</b>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="col-lg-6"
+        *ngIf="
+          (isRefinanceOrNot() && (refinanceServicingStatus | async)) ||
+          (!isRefinanceOrNot() &&
+            !isRefinanceOrNot() &&
+            (fullServicingStatus | async))
+        "
+      >
+        <div *ngIf="!showCalc">
+          <mat-card  class="card-border">
+            <h2>Calculator inputs</h2>
+            <table >
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+               <tr *ngFor="let item of calcInputData | keyvalue">
+                 <td>{{item.key}}</td>
+                 <td><b>{{item.value}}</b></td>
+               </tr>
+              
+            </table>
+          
+           
+            <h2>Calculator outputs</h2>
+            <table >
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+               <tr *ngFor="let item of calcOutputData | keyvalue">
+                 <td>{{item.key}}</td>
+                 <td><b>{{item.value}}</b></td>
+               </tr>
+              
+            </table>
+           
+          </mat-card>
+        </div>
+      </div>
+      <div
+        class="col-lg-4"
+        *ngIf="
+          (isRefinanceOrNot() && !(refinanceServicingStatus | async)) ||
+          (!isRefinanceOrNot() &&
+            !isRefinanceOrNot() &&
+            !(fullServicingStatus | async))
+        "
+      >
+        <!-- calculators -->
+        <mat-card class="card-border">
+          <div *ngIf="showCalc">
+            <div *ngIf="isRefinanceOrNot()">
+              <h2>Ezy Express Calculator</h2>
+            </div>
+
+            <div *ngIf="!isRefinanceOrNot()">
+              <h2>Full SMSF Calculator</h2>
+            </div>
+
+            <div class="mb-5">
+              <mat-form-field class="w-100">
+                <mat-label>Loan Amount</mat-label>
+                <app-currency
+                  formControlName="totalLoanFromSubAccounts"
+                  [minAmount]="1"
+                  [required]="true"
+                >
+                </app-currency>
+              </mat-form-field>
+
+              <mat-form-field class="w-100">
+                <mat-label>Loan term in years</mat-label>
+                <mat-select
+                  formControlName="loanTerm"
+                  placeholder="Loan term in years"
+                  required
+                >
+                  <!-- (selectionChange)="logLoanTerm(subAccount)"> -->
+                  <mat-option
+                    *ngFor="let _ of loanTermYrs; let i = index"
+                    [value]="30 - i"
+                    >{{ 30 - i + " yrs" }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="mb-5 mt-5 d-flex">
+              <!-- <div class="ml-auto p-2">Flex item</div> -->
+              <button class="ml-auto" mat-stroked-button color="primary">
+                Calculate
+              </button>
+            </div>
+          </div>
+          <div *ngIf="!showCalc">
+            <h2>Calculator inputs</h2>
+            <pre class="my-pre">{{ calcInputData | json }}</pre>
+            <h2>Calculator outputs</h2>
+            <pre class="my-pre">{{ calcOutputData | json }}</pre>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</form>

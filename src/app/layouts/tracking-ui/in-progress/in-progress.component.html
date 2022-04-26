@@ -1,0 +1,120 @@
+
+<div style="width: 100%;"  class="card card-default">
+  <div class="card-header">
+      <span class="card-title text-secondary h5">In Progress</span>
+  </div>
+<!-- <div class="loading-shade"
+     *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div> -->
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="large"
+  type="ball-clip-rotate-multiple"
+  >
+</ngx-spinner>
+  <div class="card-body">
+      <div class="row">
+          <div class="col-md-12 w-100  table-responsive">
+              <mat-table id="Table" class="table" #table [dataSource]="dataSource" matSort (matSortChange)="sortLoanApplicationList($event)">
+                  <!-- ID # -->
+                
+                  <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center table-column-100"> # </th>
+                      <td mat-cell mat-cell *matCellDef="let row;let i = index;" class="text-sm text-muted table-column-100">{{row.id}}</td>
+                  </ng-container>
+
+                  <!-- application code -->
+                  <ng-container  matColumnDef="Application Code">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100"> Application Code </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.applicationCode}}</mat-cell>
+                    </ng-container>
+                  <!-- application number -->
+                  <ng-container class="mmmmm" matColumnDef="applicationNumber">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header class="table-column-100"> Application Number</mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.applicationNumber}}</mat-cell>
+                  </ng-container>
+                  <!-- Application Name -->
+
+                  <ng-container matColumnDef="Application Name">
+                    <mat-header-cell *matHeaderCellDef class="table-column-100"> Application Name </mat-header-cell>
+                    <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.applicantName}}</mat-cell>
+                  </ng-container>
+
+                  <!-- Loan Purpose -->
+                  <ng-container matColumnDef="loanPurpose">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100">Loan Purpose</mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100 text-nowrap" >{{row.loanPurpose}}</mat-cell>
+                  </ng-container>
+
+                  <!-- progress status -->
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef class="table-column-100">Status</mat-header-cell>
+                  <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100" >{{row.status}}</mat-cell>
+                </ng-container>
+                  <!-- Product Group -->
+                  <ng-container matColumnDef="Product Group">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100"> Product Group </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.product_group}}</mat-cell>
+                  </ng-container>
+                  <!-- Doc Type -->
+                  <ng-container matColumnDef="Doc Type">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100"> Doc Type </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.doc_type}}</mat-cell>
+                  </ng-container>
+                  <!-- Created Date -->
+                  <ng-container matColumnDef="createdAt">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header class="table-column-100"> Created Date </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.createdDate | date : 'dd/MM/yyyy hh:mm aa': 'AEST'}}</mat-cell>
+                  </ng-container>
+                  <!-- Currently Opened -->
+                  <ng-container matColumnDef="Currently Opened">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100"> Currently Opened </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.currently_opened}}</mat-cell>
+                  </ng-container>
+                  <!-- Last Modified -->
+                  <ng-container matColumnDef="updatedAt">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header class="table-column-100"> Last Modified </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.lastModifiedDate | date: 'dd/MM/yyyy hh:mm aa': 'AEST'}}</mat-cell>
+                  </ng-container>
+                  <!-- Actions -->
+                  <ng-container matColumnDef="Actions">
+                      <mat-header-cell *matHeaderCellDef class="table-column-100"> Actions </mat-header-cell>
+                      <mat-cell mat-cell *matCellDef="let row;let i=index" class="table-column-100">
+                          <div class="button-row">
+                            <div class="row table-column-100">
+                              <div class="col-md-2 mx-2">
+                                <button mat-mini-fab class="bg-primary btn-outline-light" aria-label="Edit"
+                                        matTooltip="Edit" (click)="edit(row)">
+                                  <mat-icon>edit</mat-icon>
+                                </button>
+                              </div>
+                              <div class="col-md-2 mx-2">
+                                <button mat-mini-fab class="bg-secondary btn-outline-light" aria-label="Recycle"
+                                        matTooltip="Recycle" (click)="recycle(row,i)">
+                                  <mat-icon>recycling</mat-icon>
+                                </button>
+                              </div>
+
+                              <div class="col-md-2 mx-2">
+                                <button mat-mini-fab class="bg-danger btn-outline-light" aria-label="Recycle"
+                                        matTooltip="Delete" (click)="delete(row,i)">
+                                  <mat-icon>delete</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+                
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageIndex]="paginationData.currentPage" (page)="pageChange($event)" [pageSize]="paginationData.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" [length]="paginationData.totalElements" showFirstLastButtons></mat-paginator>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,51 @@
+<div id="wraper" class="wrapper">
+   
+    <div (click)="toggleSidebar()" style="float: right; top: 0;">
+        <span class="fa fa-times"></span>
+    </div>
+    <div id="sidebar" class="sidebar">
+         
+        <div class="profile">
+            <img src="/assets/images/avatar.png" alt="profile_picture">
+
+
+            <p>{{username}}</p>
+
+            <li>
+                <button (click)="ClickMe()" class="btn New">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Create New
+                </button>
+            </li>
+        </div>
+      
+        <ul>
+            <li>
+
+                <a [routerLinkActive]="'active'" [routerLink]="['inProgress']" class="active">
+
+                    <span class="icon"><i class="fa fa-clock-o"></i></span>
+                    <span class="item">In Progress</span>
+                </a>
+            </li>
+            <li>
+                <a [routerLinkActive]="'active'" [routerLink]="['submitted']">
+                    <span class="icon"><i class="fa fa-cloud-upload"></i></span>
+                    <span class="item">Submited</span>
+                </a>
+            </li>
+            <li>
+                <a [routerLinkActive]="'active'" [routerLink]="['recycled']">
+                    <span class="icon"><i class="fa fa-recycle"></i></span>
+                    <span class="item">Recycled</span>
+                </a>
+            </li>
+          
+
+          
+           
+
+        </ul>
+
+    </div>
+</div>

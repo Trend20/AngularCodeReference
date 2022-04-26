@@ -1,0 +1,869 @@
+<!-- <span class="fa fa-spinner spinner"
+      *ngIf="loading"></span> -->
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="large"
+  type="ball-clip-rotate-multiple"
+>
+</ngx-spinner>
+
+<form [formGroup]="serviceabilityFormGroup" class="card-body">
+  <ng-template matStepLabel
+    >Loan Details
+    {{ serviceabilityFormGroup.get("loanPurpose")?.value }}</ng-template
+  >
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Loan Purpose</mat-label>
+        <mat-select
+          formControlName="loanPurpose"
+          placeholder="Loan Purpose"
+          required
+        >
+          <mat-option
+            *ngFor="let loanPurpose of loanPurposeList"
+            [value]="loanPurpose"
+            >{{ loanPurpose }}</mat-option
+          >
+        </mat-select>
+        <mat-error>Loan Purpose Required!</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field
+        appearance="outline"
+        class="w-100"
+        *ngIf="serviceabilityFormGroup.get('loanPurpose')?.value === 'Purchase'"
+      >
+        <mat-label>Pre Approval</mat-label>
+        <mat-select
+          formControlName="preApproval"
+          placeholder="Pre approval"
+          required
+        >
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+        <mat-error>Pre Approval Required!</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <mat-form-field class="w-100" floatLabel="always">
+        <mat-label>Address</mat-label>
+        <app-places-auto-complete
+          (setAddress)="updatedAddressValues($event)"
+          addressType="address"
+          formControlName="address"
+          [required]="true"
+          [addressLocation]="'servicing'"
+        >
+        </app-places-auto-complete>
+        <mat-error>Address Required!</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Address Unit</mat-label>
+        <input formControlName="unitNumber" matInput placeholder="Enter address unit">
+      </mat-form-field>
+    </div>
+  </div>
+        <div  *ngIf="serviceabilityFormGroup.get('address')?.value !== '' && (addressApplicable) === false" class="alert alert-danger" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          We are currently not lending in this area
+        </div>
+
+        <div  *ngIf="serviceabilityFormGroup.get('address')?.value !== '' && (addressApplicable) === true" class="alert alert-success" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+           Glad to let you know that we can lend in this area
+        </div>
+
+  <section
+    *ngIf="serviceabilityFormGroup.get('loanPurpose')?.value === 'Purchase'"
+  >
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Purchase Price</mat-label>
+          <app-currency
+            formControlName="purchasePrice"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Purchase Price Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Estimated Weekly rent (Please EDIT as required)</mat-label>
+          <app-currency
+            formControlName="estimatedWeeklyRent"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Estimated Weekly rent Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Stamp Duty</mat-label>
+          <app-currency
+            formControlName="stampDuty"
+            [minAmount]="1"
+            [required]="true"
+            [readonly]="true"
+          >
+          </app-currency>
+          <mat-hint>Please edit or continue if correct</mat-hint>
+          <mat-error>Stamp Duty Required!</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Other cost legal/lender cost</mat-label>
+          <app-currency
+            formControlName="otherCost"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-hint>Please edit or continue if correct</mat-hint>
+          <mat-error>Other cost legal/lender cost Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Total funds required</mat-label>
+          <app-currency
+            formControlName="totalFunds"
+            [minAmount]="1"
+            [required]="true"
+            [readonly]="true"
+          >
+          </app-currency>
+          <mat-error>Total funds Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label
+            >What funds do you have to contribute to purchase?</mat-label
+          >
+          <app-currency
+            formControlName="loanDeposit"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Funds to contribute Required!</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+  </section>
+  <section
+    *ngIf="serviceabilityFormGroup.get('loanPurpose')?.value === 'Refinance'"
+  >
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label
+            >Current property value (Please EDIT as required)</mat-label
+          >
+          <app-currency
+            formControlName="currentEstimatedLoanAmount"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Current property value Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Estimated weekly rent (Please EDIT as required)</mat-label>
+          <app-currency
+            formControlName="refinanceEstimatedWeeklyRent"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-error>Estimated weekly rent Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div
+        class="col"
+        *ngIf="
+          this.serviceabilityFormGroup.get('isIncomeContinuous')?.value ===
+            'No' ||
+          this.serviceabilityFormGroup.get('twoYearLoanRepayment')?.value ===
+            'No'
+        "
+      >
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Other cost legal/lender cost</mat-label>
+          <app-currency
+            formControlName="otherCost"
+            [minAmount]="1"
+            [required]="true"
+          >
+          </app-currency>
+          <mat-hint>Please edit or continue if correct</mat-hint>
+          <mat-error>Other cost Required!</mat-error>
+        </mat-form-field>
+      </div>
+      <div
+        class="col"
+        *ngIf="
+          this.serviceabilityFormGroup.get('isIncomeContinuous')?.value ===
+            'No' ||
+          this.serviceabilityFormGroup.get('twoYearLoanRepayment')?.value ===
+            'No'
+        "
+      >
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Total funds required</mat-label>
+          <app-currency
+            formControlName="totalFunds"
+            [minAmount]="1"
+            [required]="true"
+            [readonly]="true"
+          >
+          </app-currency>
+          <mat-error>Total funds Required!</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label
+            >Have you received I year of continuous rental income?</mat-label
+          >
+          <mat-select
+            formControlName="isIncomeContinuous"
+            placeholder="Have you received I year of continuous rental income?"
+            required
+          >
+            <mat-option value="Yes">Yes</mat-option>
+            <mat-option value="No">No</mat-option>
+          </mat-select>
+          <mat-error>Select between Yes/No!</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label
+            >Have you paid 2 years of loan repayments by the due
+            date?</mat-label
+          >
+          <mat-select
+            formControlName="twoYearLoanRepayment"
+            placeholder="Have you paid 2 years of loan repayments by the due date?"
+            required
+          >
+            <mat-option value="Yes">Yes</mat-option>
+            <mat-option value="No">No</mat-option>
+          </mat-select>
+          <mat-error>Select between Yes/No!</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- alert -->
+    <div class="alert alert-success"  *ngIf="isExpress === true"   role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        Your Loan may qualify for Ezy Express!
+      </div>
+    <mat-divider></mat-divider>
+  </section>
+  <div
+    formArrayName="subAccounts"
+    *ngFor="let subAccount of subAccounts.controls; let i = index"
+  >
+    <div class="right-aligned-header row">
+      <div class="col-md-10">
+        <div *ngIf="i === 0">
+          <h3>
+            Primary Account -
+            {{ subAccount.get("loanAmount")?.value?.currencyValue }} (Total Loan
+            Amount
+            {{
+              serviceabilityFormGroup.get("totalLoanFromSubAccounts")?.value
+                ?.currencyValue
+            }})
+          </h3>
+          <div
+            class="text-danger total-error"
+            *ngIf="serviceabilityFormGroup?.errors?.loanAmountError"
+          >
+            {{ serviceabilityFormGroup?.errors?.loanAmountErrorMessage }}
+          </div>
+        </div>
+        <div *ngIf="i > 0">
+          <h3>
+            Sub Account {{ i }} -
+            {{ subAccount.get("loanAmount")?.value?.currencyValue }}
+          </h3>
+        </div>
+      </div>
+      <div class="float-right col-md-2">
+        <mat-icon color="accent" *ngIf="subAccount.invalid" class="float-right"
+          >error</mat-icon
+        >
+        <mat-icon
+          *ngIf="i > 0"
+          (click)="deleteSubAccount(i, subAccount )"
+          class="float-right pointer"
+          >delete</mat-icon
+        >
+      </div>
+    </div>
+    <div [formGroupName]="i">
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Loan Amount</mat-label>
+            <app-currency
+              formControlName="loanAmount"
+              [minAmount]="1"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Loan Amount Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Rate type</mat-label>
+            <mat-select
+              formControlName="rateType"
+              placeholder="Rate type"
+              required
+            >
+              <mat-option
+                *ngFor="let rateType of rateTypeList"
+                [value]="rateType"
+                >{{ rateType?.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Rate type Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div
+          class="col"
+          *ngIf="subAccount.get('rateType')?.value?.name === 'Variable'"
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Offset</mat-label>
+            <mat-select
+              formControlName="offset"
+              placeholder="Offset"
+              [required]="subAccount.get('rateType')?.value === 'Variable'"
+            >
+              <mat-option value="Yes">Yes</mat-option>
+              <mat-option value="No">No</mat-option>
+            </mat-select>
+            <mat-error>Offset Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div
+          class="col"
+          *ngIf="subAccount.get('rateType')?.value?.name === 'Fixed'"
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fixed for how long?</mat-label>
+            <mat-select
+              formControlName="fixedInterestRatePeriod"
+              placeholder="Fixed for how long?"
+              [required]="subAccount.get('rateType')?.value?.name === 'Fixed'"
+            >
+              <mat-option value="5">5 yrs</mat-option>
+              <mat-option value="4">4 yrs</mat-option>
+              <mat-option value="3">3 yrs</mat-option>
+              <mat-option value="2">2 yrs</mat-option>
+              <mat-option value="1">1 yrs</mat-option>
+            </mat-select>
+            <mat-error>Must Select one option!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Repayment type</mat-label>
+            <mat-select
+              formControlName="repaymentType"
+              placeholder="Repayment type"
+              required
+            >
+              <mat-option
+                *ngFor="let repaymentType of repaymentTypeList"
+                [value]="repaymentType"
+                >{{ repaymentType?.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Repayment type Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div
+          class="col"
+          *ngIf="
+            subAccount.get('repaymentType')?.value?.name === 'Interest only'
+          "
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Interest only period</mat-label>
+            <mat-select
+              formControlName="interestOnlyPeriod"
+              placeholder="Interest only period"
+              [required]="
+                subAccount.get('repaymentType')?.value?.name === 'Interest only'
+              "
+            >
+              <mat-option value="5">5 yrs</mat-option>
+              <mat-option value="4">4 yrs</mat-option>
+              <mat-option value="3">3 yrs</mat-option>
+              <mat-option value="2">2 yrs</mat-option>
+              <mat-option value="1">1 yrs</mat-option>
+            </mat-select>
+            <mat-error>Must select one option!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Loan term in years</mat-label>
+            <mat-select
+              formControlName="loanTerm"
+              placeholder="Loan term in years"
+              required
+              (selectionChange)="logLoanTerm(subAccount)"
+            >
+              <mat-option
+                *ngFor="let _ of loanTermYrs; let i = index"
+                [value]="30 - i"
+                >{{ 30 - i + " yrs" }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Select loan term!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>LVR</mat-label>
+            <input
+              matInput
+              formControlName="loanValueRatio"
+              placeholder="Loan value ratio"
+              type="number"
+              [max]="maximumLVR"
+              [readonly]="true"
+              required
+            />
+            <mat-error>LVR Required!</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Interest Rate</mat-label>
+            <input
+              matInput
+              formControlName="interestRate"
+              placeholder="Interest Rate"
+              required
+              [readonly]="true"
+            />
+            <mat-error>Interest Rate Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addSubAccount()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary">Add another sub account</mat-label>
+    <mat-divider></mat-divider>
+  </div>
+  <div
+    formArrayName="members"
+    *ngFor="let member of members.controls; let i = index"
+  >
+    <div class="right-aligned-header row">
+      <div class="col-md-10">
+        <h3>
+          Member {{ i + 1 }} Income Details -
+          {{ member.get("applicantType")?.value?.name }}
+        </h3>
+      </div>
+      <div
+        class="text-danger ml-3 total-error"
+        *ngIf="member?.errors?.superContributionValueError"
+      >
+        {{ member?.errors?.superContributionValueErrorMessage }}
+      </div>
+      <div class="col-md-2 float-right">
+        <mat-icon color="accent" class="float-right" *ngIf="member.invalid"
+          >error</mat-icon
+        >
+        <mat-icon *ngIf="i > 0" class="float-right pointer" (click)="deleteMember(i)"
+          >delete</mat-icon
+        >
+      </div>
+    </div>
+    <div [formGroupName]="i">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              formControlName="firstName"
+              placeholder="First Name"
+              required
+              (ngModelChange)="updatedPersonalDetailMember(i)"
+            />
+            <mat-error>FirstName Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3" *ngIf="!isExpress">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Employment Type</mat-label>
+            <mat-select
+              formControlName="applicantType"
+              placeholder="Applicant Type"
+              required
+            >
+              <mat-option
+                *ngFor="let applicantType of applicantTypeList"
+                [value]="applicantType"
+                >{{ applicantType.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Employment Type Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div
+          class="col-md-3"
+          *ngIf="
+            member.get('applicantType')?.value?.name === 'PAYG' && !isExpress
+          "
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>PAYG Type</mat-label>
+            <mat-select
+              formControlName="paygType"
+              placeholder="PAYG Type"
+              required
+            >
+              <mat-option
+                *ngFor="let paygType of paygTypeList"
+                [value]="paygType"
+                >{{ paygType.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>PAYG Type Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div
+          class="col-md-3"
+          *ngIf="
+            member.get('applicantType')?.value?.name === 'Not employed' &&
+            !isExpress
+          "
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Not employed type</mat-label>
+            <mat-select
+              formControlName="notEmployedType"
+              placeholder="Not employed type"
+              required
+            >
+              <mat-option
+                *ngFor="let notEmployedType of notEmployedTypeList"
+                [value]="notEmployedType"
+                >{{ notEmployedType.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Not employed type Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div
+          class="col-md-3"
+          *ngIf="
+            member.get('applicantType')?.value?.name === 'Not employed' &&
+            member.get('notEmployedType')?.value?.name === 'Retired' &&
+            !isExpress
+          "
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Retired type</mat-label>
+            <mat-select
+              formControlName="retiredType"
+              placeholder="Retired type"
+            >
+              <mat-option
+                *ngFor="let retiredType of retiredTypeList"
+                [value]="retiredType"
+                >{{ retiredType.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Retired Type Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'Self-employed' &&
+          !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Current year super contribution</mat-label>
+            <app-currency
+              formControlName="currentYearSuperContribution"
+              (keyup)="onKeySearch($event)"
+              [minAmount]="1"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Current year super contribution Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Previous year’s super contribution</mat-label>
+            <app-currency
+              formControlName="previousYearSuperContribution"
+              [minAmount]="1"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Previous year’s super contribution Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Estimated annual super contribution</mat-label>
+            <app-currency
+              formControlName="estimatedAnnualSuperContribution"
+              [minAmount]="0"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Estimated annual super contribution Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'Self-employed' &&
+          !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Enter ABN Number</mat-label>
+            <app-abn
+              formControlName="selfEmployedAbnNumber"
+              [required]="true"
+              (abnSearchDetailsEmitter)="setSelfEmployed($event, member)"
+            ></app-abn>
+            <mat-error>Enter ABN Number Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Company Name</mat-label>
+            <input
+              matInput
+              formControlName="selfEmployedCompanyName"
+              placeholder="Company Name"
+              type="text"
+              required
+            />
+            <mat-error>Company Name Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'Not employed' &&
+          !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Estimated annual super contribution</mat-label>
+            <app-currency
+              formControlName="notEmployedEstimatedAnnualSuperContribution"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Estimated annual super contribution Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'PAYG' && !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Employer’s super contribution</mat-label>
+            <app-currency
+              formControlName="employerSuperContribution"
+              [minAmount]="1"
+              [required]="true"
+            ></app-currency>
+            <mat-error>Employer’s super contribution Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Frequency</mat-label>
+            <mat-select
+              formControlName="employerSuperContributionFrequency"
+              placeholder="Frequency"
+              required
+            >
+              <mat-option
+                *ngFor="let frequency of frequencyList"
+                [value]="frequency"
+                >{{ frequency?.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Frequency Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'PAYG' && !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Additional/personal super contribution</mat-label>
+            <app-currency
+              formControlName="additionalSuperContribution"
+              [required]="false"
+            ></app-currency>
+            <!-- <mat-error>Additional/personal super contribution Required!</mat-error> -->
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Frequency</mat-label>
+            <mat-select
+              formControlName="additionalSuperContributionFrequency"
+              placeholder="Frequency"
+              required="false"
+            >
+              <mat-option
+                *ngFor="let frequency of frequencyList"
+                [value]="frequency"
+                >{{ frequency?.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Frequency Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'PAYG' && !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Employer ABN</mat-label>
+            <app-abn
+              formControlName="employerAbn"
+              [required]="true"
+              (abnSearchDetailsEmitter)="setEmployedAbn($event, member)"
+              (abnSearchErrorEmmitter)="setLoanDetailsAbnSearchErrorMessage($event)"
+            ></app-abn>
+            <mat-error class="text-danger" *ngIf= "loanDetailsABNSearchErrorMessage != ''">{{loanDetailsABNSearchErrorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Employer Name</mat-label>
+            <input
+              matInput
+              formControlName="employerName"
+              placeholder="Employer Name"
+              required
+            />
+            <mat-error>Employer Name Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="
+          member.get('applicantType')?.value?.name === 'PAYG' && !isExpress
+        "
+      >
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>PAYG start date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              #paygStartDate (input)="paygDateFormatter($event, i)"
+              formControlName="paygStartDate"
+              required
+              placeholder="DD/MM/YYYY"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+            <mat-error>PAYG start date Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button class="btn-outline-primary">
+      <mat-icon aria-hidden="false" (click)="addMember()">add</mat-icon>
+    </button>
+    <mat-label class="btn-outline-primary">Add another member</mat-label>
+  </div>
+  <div class="mt-1">
+    <button
+      class="btn-sm btn-outline-primary float-right next-btn"
+      mat-button
+      matStepperNext
+    (click)="goForward()">
+    <!-- [disabled]="serviceabilityFormGroup.invalid" -->
+      Next
+    </button>
+  </div>
+</form>

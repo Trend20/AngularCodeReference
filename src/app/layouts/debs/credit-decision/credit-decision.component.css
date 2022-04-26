@@ -1,0 +1,176 @@
+form {
+  overflow: hidden;
+}
+
+.conditional,
+.pre-approval,
+.formal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin: auto;
+  width: 100%;
+}
+
+.top-text {
+  display: flex;
+  width: 40%;
+  margin: auto;
+  margin-bottom: 30px;
+}
+
+.top-text p {
+  font-size: 1rem;
+}
+
+.conditional-steps {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.conditional-steps p {
+  margin-top: 10px !important;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-indent: -20px;
+}
+
+.conditional-steps p span {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.note {
+  display: flex;
+  width: 40%;
+  margin-left: -30px;
+  margin-top: 30px;
+}
+
+.note p {
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.offer-statement {
+  display: flex;
+  width: 40%;
+  margin-left: -30px;
+  margin-top: 10px;
+}
+
+.offer-statement p {
+  display: flex;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 20px 50px;
+}
+
+.steps > h3,
+h4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  padding: 5px 0px;
+}
+
+.first-step {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.proceeding-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.first-step span,
+.proceeding-steps span {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: -10px;
+}
+
+.first-step span h3 {
+  margin-left: 20px;
+}
+
+.first-step span h3,
+.proceeding-steps span h3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  margin-right: 20px;
+  width: 20%;
+}
+
+.first-step span p,
+.proceeding-steps span p {
+  display: flex;
+  font-size: 1rem;
+}
+
+.first-step span p a {
+  margin-left: 10px;
+}
+
+.print {
+  display: flex;
+  padding: 10px;
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+}
+#file-upload {
+  display: flex;
+  align-items: center;
+}
+
+.upload {
+  display: flex;
+  align-items: center;
+  margin-top: -30px;
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  margin-left: 0px;
+  margin-top: -15px;
+}
+
+.upload-btn {
+  border: none;
+  color: rgb(32, 161, 178);
+  outline: none;
+  cursor: pointer;
+  background: none;
+  font-size: 1rem;
+}
+
+.upload-btn:hover {
+  text-decoration: none;
+}
+.file-input {
+  display: none;
+}
+
+.nav-btn {
+  font-size: 1rem;
+  font-weight: 700;
+}

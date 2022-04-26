@@ -1,0 +1,259 @@
+
+<form [formGroup]="brokerDeclarationFormGroup" class="card-body">
+
+  <ng-template matStepLabel>Broker Declaration</ng-template>
+  <p class="h2">Broker Declaration</p>
+
+  <div class="row w-100 mt-5">
+    <div class="col w-100">
+          <button mat-raised-button (click)="toggleShowCard()" class="button">
+            I have signed application forms and have identified the client
+          </button>
+    </div>
+    <div class="col">
+      <button mat-raised-button (click)="moveToClientDeclarationButton()" class="button">
+        Send the application to the clients for digital signature and identification.
+      </button>
+
+    </div>
+  </div>
+
+ <mat-card class="card mt-3 top" *ngIf="showCard">
+    <p class="p-text">Please record the client/s response to the below questions in the loan application form.</p>
+   <mat-card-content>
+    <div class="row w-50 mt-3">
+      <div class="col w-100">
+      <p class="mt-3">Date client signed loan application</p>
+      </div>
+       <div class="col">
+         <mat-form-field class="w-50">
+           <mat-label>Date of signature</mat-label>
+           <input matInput [matDatepicker]="seconddatepicker"  [max]="maxDecDate"
+           #dateOfSignature (input)="clientSignatureDateFormatter($event, 0)"
+           formControlName="dateOfSignature" placeholder="dd/MM/yyyy" required>
+           <mat-datepicker-toggle matSuffix [for]="seconddatepicker"></mat-datepicker-toggle>
+           <mat-datepicker #seconddatepicker startView="multi-year"></mat-datepicker>
+         </mat-form-field>
+       </div>
+     </div>
+
+    <section class="table-section">
+      <div>
+        <p>Declarations and Acknowledgement - Applicant(s)</p>
+      </div>
+      <div class="w-100">
+        <div class="row">
+         <div class="col-md-10">
+          <p class="font-weight-bold">Have you and/or your spouse/joint applicant or any company with which you were associated:</p>
+         </div>
+         <div class="col-2">
+           <div class="row header-options">
+             <h3>Yes</h3>
+             <h3>No</h3>
+           </div>
+         </div>
+        </div>
+
+        <div class="row quiz-container w-100" *ngFor="let question of declarationQuestions; let i = index;">
+          <div class="col-10">
+            <div class="row w-100">
+              <div class="row  w-100 mt-4">
+                  <div class="col-md-8 declarations-questions">
+                      <p><b>{{ i + 1 }}</b></p>
+                      <p class="ml-3">{{ question.content }}</p>
+                  </div>
+                  <div class="col-md-2 text-box">
+                  <mat-form-field class="w-30" *ngIf="(brokerDeclarationFormGroup.get('dischargeDate')?.value == 'Yes') && i == 3">
+                    <mat-label>Discharge Date</mat-label>
+                    <input matInput [matDatepicker]="picker" [max]="maxDate"
+                    #bankruptcyDischargeDate (input)="dischargeDateFormatter($event, 0)"
+                    formControlName="bankruptcyDischargeDate" placeholder="DD/MM/YYYY" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+                  </mat-form-field>
+                  </div>
+              </div>
+            </div>
+                <div *ngIf="( i === 8 && brokerDeclarationFormGroup.get('expectSignificantChange')?.value == 'Yes') ||( i === 6 && brokerDeclarationFormGroup.get('lenderApplication')?.value == 'Yes') ||( i === 5 && brokerDeclarationFormGroup.get('transactionBalance')?.value == 'Yes')">
+                  <mat-form-field class="text w-50">
+                    <mat-label>If yes, please provide details/information here</mat-label>
+                    <input matInput  type="text"  formControlName="{{ question.formControlNameDetails }}" required/>
+                  </mat-form-field>
+                 </div>
+          </div>
+          <div class="col-2 radio-options">
+            <mat-radio-group formControlName="{{ question.formControlNameValue }}">
+              <mat-radio-button class="options" value="Yes"></mat-radio-button>
+              <mat-radio-button class="options" value="No"></mat-radio-button>
+             </mat-radio-group>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <section class="section" *ngIf="brokerDeclarationFormGroup.get('applicantFormerName')?.value === 'Yes'">
+          <div class="row w-100">
+            <span class="text-muted details">If yes, please specify below</span>
+          </div>
+
+          <div class="w-100">
+            <p class="my-p mt-3">Reason for Former Names: (e.g maiden name, married name, etc) </p>
+            <div class="row w-100">
+             <div class="mr-5">
+               <mat-form-field class="text w-100">
+                 <mat-label>Leave a reason</mat-label>
+                 <input matInput  type="text"  formControlName="formerNameReason" required/>
+               </mat-form-field>
+             </div>
+             <div class="ml-5">
+               <mat-form-field class="w-100 mt-2">
+                 <mat-label>Date of change</mat-label>
+                 <input matInput [matDatepicker]="picker"
+                 #firstDateOfChange (input)="firstDateOfChangeFormatter($event, 0)"
+                 [max]="maxDate" formControlName="firstDateOfChange"  placeholder="DD/MM/YYYY" required>
+                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                 <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+               </mat-form-field>
+             </div>
+           </div>
+
+              <div class="row w-100">
+               <div class="mr-5">
+                <mat-form-field class="text w-100">
+                  <mat-label>Leave a reason</mat-label>
+                  <input matInput  type="text"  formControlName="formerNameReason"  required/>
+                </mat-form-field>
+                </div>
+                <div class="ml-5">
+                  <mat-form-field class="mt-2 w-100">
+                    <mat-label>Date of change</mat-label>
+                    <input matInput [matDatepicker]="seconddatepicker"
+                    #secondDateOfChange (input)="secondDateOfChangeFormatter($event, 0)"
+                    [max]="maxDate" formControlName="secondDateOfChange" placeholder="dd/MM/yyyy" required>
+                    <mat-datepicker-toggle matSuffix [for]="seconddatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #seconddatepicker startView="multi-year"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+        </section>
+      </div>
+    </section>
+  <div class="col w-100 mt-5">
+    <p class="ml-2">Electronic Delivery of Loan and Security Documentation.</p>
+    <div class="row w-100">
+      <mat-radio-group formControlName="electronicDelivery">
+        <mat-radio-button class="options mr-5 selected" *ngFor="let selected of electronicDeliveryList" [value]="selected">{{ selected }}</mat-radio-button>
+        <div class="row mt-2" class="alternative">
+          <p class="ml-3">Alternatively, the documents are to be posted to: </p>
+          <mat-radio-button class="options mr-5 list" *ngFor="let list of documentsPostList" [value]="list">{{ list }}</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
+  </div>
+ </mat-card-content>
+ </mat-card>
+
+
+<mat-card class="card mt-5" *ngIf="showCard">
+  <mat-card-content class="mt-5">
+    <section>
+      <div class="col">
+        <div class="row mt-5">
+           <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>MEZY Accreditation Number</mat-label>
+              <input matInput type="number" formControlName="accreditationNumber"  placeholder="Accreditation Number" required>
+            </mat-form-field>
+           </div>
+            <div class="col">
+              <mat-form-field class="w-100">
+                <mat-label>Business Partner/ Credit Representative Name</mat-label>
+                <input matInput  formControlName="creditRepresentativeName"  placeholder="Enter Representative Name" required>
+              </mat-form-field>
+            </div>
+           <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Credit Rep/ Licence Number</mat-label>
+              <input matInput type="number" formControlName="licenceNumber"   placeholder="Enter Licence Number" required>
+            </mat-form-field>
+           </div>
+        </div>
+
+        <div class="row mt-5">
+         <div class="col">
+          <mat-form-field class="w-100" >
+            <mat-label>Licence Holder Number</mat-label>
+            <input type="number" matInput  formControlName="licenceHolderNumber"  placeholder="Enter Licence Holder Number" required>
+          </mat-form-field>
+         </div>
+           <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>ACL Number</mat-label>
+              <input type="number" matInput  formControlName="aclNumber"  placeholder="Enter ACL Number" required>
+            </mat-form-field>
+           </div>
+           <div class="col">
+            <mat-form-field class="w-100" >
+              <mat-label>Contact Phone Number</mat-label>
+              <input type="tel" onkeypress="return /[0-9]/i.test(event.key)" minlength="10" maxlength="10" size="10" matInput  formControlName="contactPhoneNumber" autocomplete="off"  placeholder="Enter Phone Number" required>
+            </mat-form-field>
+           </div>
+
+        </div>
+      </div>
+
+      <div>
+        <mat-checkbox class="options mr-5 mt-5" formControlName="firstCheckboxDeclaration">By checking this box, I submit the credit application and in so doing declare:</mat-checkbox>
+
+        <mat-list role="list" *ngFor="let declaration of submissionDeclarations; let i = index;">
+          <mat-list-item role="listitem">
+            <span class="mr-4">{{ i + 1 }}.</span>
+            {{ declaration.value }}
+          </mat-list-item>
+        </mat-list>
+        <mat-checkbox class="options mr-5 mt-5" formControlName="lastCheckBoxDeclaration">By checking this box, I submit the credit application and in so doing declare:</mat-checkbox>
+      </div>
+
+      <div class="col mt-5">
+            <button (click)="displaySignatureArea()" mat-raised-button class="review-button">
+              Click here to review loan application and digitally sign.
+            </button>
+      </div>
+
+      <div *ngIf="showSignatureArea" class="row">
+
+        <div class="col mt-3">
+          <mat-form-field class="w-100">
+            <mat-label>Select Preferred Signature Font</mat-label>
+            <mat-select [(value)]="signatureFontFamilyKey" formControlName="preferredSignatureFont" (selectionChange)="changeSignatureFont($event)">
+              <mat-option
+                *ngFor="let font of fonts"
+                [value]="font.key"
+                >{{ font.value }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col mt-3">
+          <mat-card class="card-border">
+
+            <div style="padding-top: 30px; padding-bottom: 20px">
+              <h1 [ngStyle]="{'font-family': signatureFontFamilyKey}">
+                {{ this.currentUser?.name + ' ' + this.currentUser?.username }}
+              </h1>
+            </div>
+          </mat-card>
+        </div>
+
+      </div>
+    </section>
+  </mat-card-content>
+</mat-card>
+
+<!-- <button (click)="uicheck()">Check</button> -->
+<div class="mt-1">
+  <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>Back</button>
+  <button *ngIf="showCard" class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext>Next</button>
+</div>
+</form>

@@ -1,0 +1,72 @@
+<div class="card card-default">
+    <div class="card-header">
+        <span class="card-title text-secondary h5">Submitted</span>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12 table table-responsive w-100 mat-elevation-z0">
+                <mat-table #table [dataSource] = "dataSource" matSort>
+                    <!-- ID # -->
+                    <ng-container matColumnDef="#">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header class="text-center table-column-100"> # </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.id}}</mat-cell>
+                    </ng-container>
+                    <!-- application code -->
+                    <ng-container matColumnDef="Application Code">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Application Code </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.application_code}}</mat-cell>
+                    </ng-container>
+                    <!-- Application Name -->
+                    <ng-container matColumnDef="Application Name">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Application Name </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted text-nowrap table-column-100" >{{row.application_name}}</mat-cell>
+                    </ng-container>
+                    <!-- Submitted Status -->
+                    <ng-container matColumnDef="Submitted Status">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Submitted Status </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100"><span class="btn btn-sm btn-success">{{row.status}}</span></mat-cell>
+                    </ng-container>
+                    <!-- Lender Reference -->
+                    <ng-container matColumnDef="Lender Reference">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Lender Reference </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.lender_reference}}</mat-cell>
+                    </ng-container>
+                    <!-- Product Group -->
+                    <ng-container matColumnDef="Product Group">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Product Group </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.product_group}}</mat-cell>
+                    </ng-container>
+                    <!-- Doc Type -->
+                    <ng-container matColumnDef="Doc Type">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Doc Type </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.doc_type}}</mat-cell>
+                    </ng-container>
+                    <!-- Created Date -->
+                    <ng-container matColumnDef="Submitted Date">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Submitted Date </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let row" class="text-sm text-muted table-column-100">{{row.created_date}}</mat-cell>
+                    </ng-container>
+                    <!-- Actions -->
+                    <ng-container matColumnDef="Actions">
+                        <mat-header-cell class="table-column-100" *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+                        <mat-cell mat-cell class="table-column-100" *matCellDef="let row">
+                            <div class="button-row">
+                                <div class="row">
+                                    <div class="col-md-2 mx-2">
+                                        <button mat-mini-fab class="bg-secondary btn-outline-light" aria-label="Renew" matTooltip="Renew" (click) = "renew(row)">
+                                            <mat-icon>autorenew</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

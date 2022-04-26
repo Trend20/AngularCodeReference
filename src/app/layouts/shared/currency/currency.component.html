@@ -1,0 +1,5 @@
+<div [formGroup]="currency" class="row" id="parentDiv">
+    <input matInput formControlName="amount" #amount
+        type="text"
+        class="col-md-8 ml-3" [readonly]="readonly" [required]="required" (input)="_handleInput(currency.controls.amount)" (keyup)="onKeyUp()">
+</div>

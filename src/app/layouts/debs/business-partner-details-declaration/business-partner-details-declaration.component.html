@@ -1,0 +1,217 @@
+
+<form class="card-body" [formGroup]="businessPartnerDetailsDeclarationFormGroup">
+  <ng-template matStepLabel>Business Partner Details Declaration</ng-template>
+  <!-- <p class="h2">Business Partner Details Declaration</p> -->
+
+  <mat-card class="card">
+    <div class="col">
+      <h3><b><span>Introducer Declaration:</span> I declare that I have interviewed the applicant(s) and confirm that:</b></h3>
+    </div>
+
+    <div class="col" *ngFor="let myQuestion of singleChoiceQuestions; let i = index;">
+      <div class="w-100">
+        <div class="row single-quiz">
+          <div class="col-10">
+            <div class="row content">
+              <p><span class="number">{{ i + 1 }}</span>{{ myQuestion.question }}</p>
+              <!-- <p  *ngIf="i === 7">
+                If refinancing or consolidating debts, please provide details of the debts being refinanced or consolidated and the resulting benefit for all the applicant's existing loans and those being refinanced or consolidated.
+              </p> -->
+            </div>
+
+            <div class="col text-area" *ngIf="(i === 0 && businessPartnerDetailsDeclarationFormGroup.get('clientFace')?.value == 'No') || (i === 1 && businessPartnerDetailsDeclarationFormGroup.get('sufficientEnglish')?.value == 'No') || (i === 2 && businessPartnerDetailsDeclarationFormGroup.get('financialPosition')?.value == 'No') ">
+              <p>If the answer is 'NO', to the question above, please provide details</p>
+                <mat-form-field class="w-50">
+                <mat-label>Provide details</mat-label>
+                <input matInput placeholder="Enter details here" formControlName="{{ myQuestion.detailsFormControlName }}" required>
+                </mat-form-field>
+            </div>
+
+            <div class="col" *ngIf="i === 3 || i === 4 || i === 5 || i === 6">
+              <mat-form-field class="w-50">
+                <mat-label>Provide details here.</mat-label>
+                <input matInput placeholder="Enter details.." formControlName="{{ myQuestion.detailsFormControlName }}" required>
+                </mat-form-field>
+            </div>
+
+            <div class="col text-area" *ngIf="(i === 8 && businessPartnerDetailsDeclarationFormGroup.get('closePersonal')?.value == 'Yes' || i === 9 && businessPartnerDetailsDeclarationFormGroup.get('existingCommitments')?.value == 'Yes')">
+                <mat-form-field class="w-50">
+                <mat-label>Provide details</mat-label>
+                <input matInput placeholder="Enter details here" formControlName="{{ myQuestion.detailsFormControlName }}" required>
+                </mat-form-field>
+            </div>
+          </div>
+          <div class="col" *ngIf="i !== 3 && i !== 4 && i !== 5 && i !== 6 &&  i !== 7">
+              <mat-radio-group formControlName="{{ myQuestion.formControl }}">
+                <mat-radio-button class="options" value="Yes">Yes</mat-radio-button>
+                <mat-radio-button class="options" value="No">No</mat-radio-button>
+             </mat-radio-group>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="loanPurpose == 'Refinance' && i === 7">
+        <div class="table">
+          <div class="row">
+            <div class="row  loan-purpose">
+              <div class="col">
+                <h3>Loan purpose and benefits</h3>
+              </div>
+              <div class="col purpose">
+                <mat-form-field class="w-100">
+                  <mat-label>Purpose</mat-label>
+                  <input matInput placeholder="Enter purpose here..." formControlName="loanPurposeAndBenefits">
+                  </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row  mt-3 refinance">
+              <div class="col">
+                <h3 style="font-weight: bold;">Refinance reasons:</h3>
+              </div>
+              <div class="col re-options">
+                <mat-radio-group  formControlName="refinanceReasons" *ngFor="let reason of refinanceReasons">
+                  <mat-radio-button value="{{ reason.value }}">{{ reason.reason }}</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+           <div class="col mt-3">
+             <h3>Estimated refinance costs:</h3>
+           </div>
+
+             <div class="row w-100">
+               <div class="col w-50 liability">
+                <p>Liability: (Loan type i.e: home loan, credit card and account number)</p>
+                <div class="col w-100">
+                  <mat-form-field class="w-100">
+                    <mat-label>Enter liability</mat-label>
+                    <input matInput placeholder="liability" formControlName="enterLiability">
+                    </mat-form-field>
+                </div>
+               </div>
+               <div class="col w-50 estimated">
+                <p>Estimated exit cost</p>
+                <div class="col w-100">
+                  <mat-form-field class="w-100">
+                    <mat-label>Enter exit cost</mat-label>
+                    <app-currency formControlName="exitCost" [minAmount]="1"  [required]="true" placeholder="Estimated exist cost">  </app-currency>
+                    </mat-form-field>
+                </div>
+               </div>
+             </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  </mat-card>
+<!-- end of broker quiz -->
+
+  <mat-card class="mt-5 card">
+    <p id="confirm"><b>I confirm that:</b></p>
+        <div class="col confirmation" *ngFor="let cQuiz of confirmationQuestions; let num =index;">
+          <div class="cQuiz-content">
+            <span class="number">{{ num + 1 }}</span>
+            <p class="mt-2">{{ cQuiz.content }}</p>
+          </div>
+       </div>
+
+       <div class="col answer">
+        <p>If the answer is 'YES', to the question above, please provide details</p>
+        <mat-form-field class="w-50">
+          <mat-label>Provide details</mat-label>
+          <input matInput placeholder="Enter details here..." formControlName="ifConflictExistDetails">
+          </mat-form-field>
+      </div>
+      <p id="declaration">
+        I hereby declare the following: The information I have collected and verified is true and correct. The original current documents were produced to me as true copies are attached to this certification.
+        All information I have or will provide in connection with the above loan is correct and not misleading as far as I know. We are aware this application may be audited by Mortgage Ezy for credit quality.
+        The person being identified appears to have similar facial characteristics as the person in the photographs included in the original identity documents. Nothing in my dealings with the applicant have raised suspicions
+        concerning the proposed transaction or the applicant/guarantor's identities. I am satisfied that the identity of the Applicant(s), whose name, former name (if applicable), their signature, date of birth and residential
+        address appears has been verified in accordance with the criteria listed. I confirm that I have sighted and verified documents relating to any company, trust or partnership and details are true and correct.
+        Complete copies of these are attached to this form.  I have made a preliminary assessment that the proposed loan is not unsuitable and is appropriate. The assessment is valid for 90 days from the date below and I have
+        sighted and validated all the original documents and all copies of documents throughout the loan process associated with this loan application forwarded to Mortgage Ezy. I have provided all parties all documents  required
+        under the National Consumer Credit Protection Act 2009 and I hereby indemnify Mezy Assets Pty Ltd and its funders in respect of any loss claim or expense (including civil and criminal penalties) arising from my conduct or the
+      conduct of any of my associates in connection with this loan.</p>
+
+      <mat-checkbox class="mt-5" required formControlName="agreeToSignDigitally">
+        By checking this box, I agree to digitally sign the business partner signature and date sections of the Business Partner Details  and Declaration Form.
+      </mat-checkbox>
+
+      <button class="sign-btn" *ngIf="this.businessPartnerDetailsDeclarationFormGroup.valid">Click here to review the Business Partner Details and Declaration Form and digitally sign</button>
+
+       <div class="row mt-5">
+
+         <div class="col mt-3">
+          <mat-form-field class="w-100">
+            <mat-label>Business Partner Name</mat-label>
+            <input matInput formControlName="businessPartnerName"  placeholder="Partner Name" required>
+            <mat-error>Partner Name required!</mat-error>
+          </mat-form-field>
+         </div>
+
+            <!-- <div class="col">
+              <div class="row w-100 m-auto sign">
+                <span>Signature</span>
+               <div class="col signature-container w-50">
+                <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()"></signature-pad>
+               </div>
+               <div class="row">
+                <div class="signature-image" *ngIf="signatureImg">
+                  <img src='{{ signatureImg }}' />
+                </div>
+                <div class="buttons">
+                  <button mat-raised-button color="warn" (click)="clearSignature()">Clear signature</button>
+                  <button mat-raised-button color="primary"(click)="savePad()">Save signature</button>
+                </div>
+               </div>
+              </div>
+            </div> -->
+            <div class="col mt-3">
+              <mat-form-field class="w-100">
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="signaturedatepicker" [max]="maxDate"
+                #dateOfSignature (input)="businessPartnerDateFormatter($event, 0)"
+                formControlName="dateOfSignature"  placeholder="DD/MM/YYYY" required>
+                <mat-datepicker-toggle matSuffix [for]="signaturedatepicker"></mat-datepicker-toggle>
+                <mat-datepicker #signaturedatepicker startView="multi-year"></mat-datepicker>
+                <mat-error>Select Date!</mat-error>
+              </mat-form-field>
+            </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Select Preferred Signature Font</mat-label>
+            <mat-select [(value)]="signatureFontFamilyKey" formControlName="selectPreferredSignature" (selectionChange)="changeSignatureFont($event)">
+              <mat-option
+                *ngFor="let font of fonts"
+                [value]="font.key"
+                >{{ font.value }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div  *ngIf="businessPartnerDetailsDeclarationFormGroup.get('businessPartnerName')?.value !== ''" class="row justify-content-center">
+        <mat-card class="card-border">
+
+          <div style="padding-top: 30px; padding-bottom: 20px">
+            <h1 [ngStyle]="{'font-family': signatureFontFamilyKey}">
+              {{ businessPartnerDetailsDeclarationFormGroup.get("businessPartnerName")?.value }}
+            </h1>
+          </div>
+        </mat-card>
+
+      </div>
+  </mat-card>
+  <!-- <button (click)="uicheck()">Check</button> -->
+
+<div class="mt-1">
+  <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>Back</button>
+  <button class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext (click)="checkBusinessPartnerFormValidity()">Next</button>
+</div>
+</form>

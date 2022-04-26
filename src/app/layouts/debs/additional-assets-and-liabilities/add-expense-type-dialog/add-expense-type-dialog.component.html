@@ -1,0 +1,36 @@
+<h2 class="text-muted h2">Add another expense</h2>
+<form #form="ngForm" (ngSubmit)="addCategory(form)" autocomplete="off">
+    <mat-dialog-content style="width: 100%;">
+        <!-- <div class="container"> -->
+            <mat-form-field class="w-100">
+                <mat-label>Category</mat-label>
+                <input class="w-100"
+                    matInput 
+                    class="text-sm text-muted"
+                    [(ngModel)]="expenseCategory.category" name="category"
+                    type="text"
+                    required
+                    #category="ngModel">
+                <mat-error *ngIf="category.hasError('required')" class="text-muted">Category cannot be empty</mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-100">
+                <mat-label>Description</mat-label>
+                <textarea matInput class="text-sm text-muted"
+                    matInput
+                    required
+                    [(ngModel)]="expenseCategory.description" name="onSubscriptionMessage" name="description"
+                    #description="ngModel"
+                ></textarea>
+                <mat-error *ngIf="description.hasError('required')" class="text-muted">Description Cannot be empty</mat-error>
+            </mat-form-field>
+        <!-- </div> -->
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button color="primary">
+            <mat-icon>save</mat-icon> Add
+        </button>
+        <button mat-button color="primary" (click)="dismiss()">
+            <mat-icon>cancel</mat-icon> Cancel
+        </button>
+    </mat-dialog-actions>
+</form>

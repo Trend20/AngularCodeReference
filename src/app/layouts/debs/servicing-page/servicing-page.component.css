@@ -1,0 +1,50 @@
+.edit {
+  width: 30%;
+  padding: 12px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.intro p {
+  font-size: 1rem;
+}
+
+.card-border {
+  border: 1px solid #000;
+  border-radius: 5px !important;
+}
+
+h2 .blue-color > {
+  color: blue;
+}
+
+.red-color {
+  color: red;
+}
+
+.green-color {
+  color: green;
+}
+
+
+.button-length {
+  width: 170px !important;
+}
+
+.button-length-proceed {
+  width: 190px !important;
+}
+
+.my-pre {
+  line-height:2.4em;
+  background: black;
+  background-size:2.4em 2.4em;
+  background-origin:content-box;
+  padding:10px 20px;
+  text-align:justify;
+  font-family:calibri,arial,sans-serif;
+  color: white;
+}

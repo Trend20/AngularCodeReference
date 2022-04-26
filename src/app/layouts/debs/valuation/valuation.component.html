@@ -1,0 +1,145 @@
+<form [formGroup]="valuationFormGroup" class="card-body">
+    <div class="row">
+        <div class="col-md-5">
+            <mat-form-field class="w-100">
+                <mat-label>Security Address:</mat-label>
+                <input type="text" formControlName="securityAddress" matInput readonly>
+                <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+              </mat-form-field>
+        </div>
+        <div class="col-md-3">
+            <mat-form-field class="w-100">
+                <mat-label *ngIf="loanPurpose == 'Purchase'">Purchase Price:</mat-label>
+                <mat-label *ngIf="loanPurpose == 'Refinance'">Estimated Value:</mat-label>
+                <mat-label *ngIf="loanPurpose == undefined || loanPurpose == null">Purchase Price / Estimated Value:</mat-label>
+                <app-currency formControlName="propertyValue" [minAmount]="1"  [required]="true">  </app-currency>
+                <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+              </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <mat-form-field class="w-100">
+                <mat-label class="text-muted mt-4">Valuation Report</mat-label>
+                <mat-select placeholder="Select an option" formControlName="valuationType">
+                    <mat-option *ngFor="let valuationType of valuationTypeList" [value]="valuationType">{{valuationType.description}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div *ngIf="valuationFormGroup.get('valuationType')?.value?.code === 'EXISTING'">
+        <div class="row">
+            <div class="col-md-2">
+                <mat-form-field class="w-100">
+                    <mat-label>Valex Details</mat-label>
+                    <mat-select formControlName="existingValexInsertMethod">
+                        <mat-option value="insertValexNumber">Insert Valex Number manually</mat-option>
+                        <mat-option value="uploadValexDocument">Upload Document</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3" *ngIf="valuationFormGroup.value?.existingValexInsertMethod === 'insertValexNumber'">
+                <mat-form-field class="w-100">
+                    <mat-label>Enter Valex Reference number</mat-label>
+                    <input type="number" formControlName="valexReferenceNumber" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i> Valex Reference Number</mat-hint>
+                    </mat-form-field>
+            </div>
+            <div class="col-md-6" style="height: 40px;" *ngIf="valuationFormGroup.value?.existingValexInsertMethod === 'uploadValexDocument'">
+                <app-drag-and-drop class="w-100" style="height: 10px;" formControlName="valexDocument"></app-drag-and-drop>
+            </div>
+
+        </div>
+        <div [className]="valuationFormGroup.value?.existingValexInsertMethod === 'uploadValexDocument' ? 'row mt-15' : 'row'" >
+            <div class="col-md-5">
+                <mat-form-field class="w-100">
+                    <mat-label>Valex Security Address:</mat-label>
+                    <input type="text" formControlName="valexSecurityAddress" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Valuation Firm:</mat-label>
+                    <input type="text" formControlName="valuationFirm" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                  </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Date of Valuation:</mat-label>
+                    <input class="text-sm text-muted" matInput [matDatepicker]="picker"
+                    #dateOfValuation (input)="valuationDateFormatter($event, 0)"
+                    formControlName="dateOfValuation" required placeholder="DD/MM/YYYY" [max]="currDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Valuation Validated Amount</mat-label>
+                    <app-currency formControlName="valuationValidatedAmount"></app-currency>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                    </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Variance %</mat-label>
+                    <input type="number" formControlName="variance" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="valuationFormGroup.get('valuationType')?.value?.code === 'REQUESTED'">
+        <div class="row">
+            <div class="col-md-3 mt-5">
+                <mat-form-field class="w-100">
+                    <mat-label class="text-muted mt-4">Security Type</mat-label>
+                    <mat-select placeholder="Select an option" formControlName="securityType">
+                        <mat-option *ngFor='let type of securityTypeList; let i = index' [value]="type">{{type.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3 mt-5">
+                <mat-form-field class="w-100">
+                    <mat-label class="text-muted mt-4">Security Document</mat-label>
+                    <mat-select placeholder="Select an option" formControlName="securityDocument">
+                        <mat-option *ngFor='let document of securityDocumentList; let i = index' [value]="document">{{document.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6" style="height: 50px;">
+                <app-drag-and-drop class="w-100" style="height: 10px;" formControlName="supportingDocument"></app-drag-and-drop>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Contact person for Valuation</mat-label>
+                    <input type="text" formControlName="contactPersonForValuation" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="w-100">
+                    <mat-label>Contact number</mat-label>
+                    <input type="number" formControlName="contactNumber" matInput required>
+                    <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i></mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>Back</button>
+        <button class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext>Next</button>
+      </div>
+</form>

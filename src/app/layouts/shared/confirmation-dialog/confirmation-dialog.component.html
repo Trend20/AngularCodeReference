@@ -1,0 +1,12 @@
+<h2 class="text-muted h2">{{dialogHeader}}</h2>
+<mat-dialog-content style="width: 100%;">
+    {{message}}
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button color="primary" (click)="confirm()">
+        <mat-icon>save</mat-icon> Confirm
+    </button>
+    <button mat-button color="primary" (click)="dismiss()">
+        <mat-icon>cancel</mat-icon> Cancel
+    </button>
+</mat-dialog-actions>

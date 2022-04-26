@@ -1,0 +1,493 @@
+<form [formGroup]="additionalALFormGroup" class="card-body">
+  <ng-template matStepLabel>Additional Assets and Liabilities</ng-template>
+  <div class="row">
+    <span class="text-black h1">Assets</span>
+  </div>
+  <!-- Real estate -->
+  <div class="row">
+    <span class="text-black h3">Real Estate</span>
+  </div>
+  <div formArrayName="realEstateAssetsFormArray">
+    <div class="row" [formGroupName]="i" *ngFor="let realEstate of realEstateAssetsFormArray.controls; let i = index">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="w-100" floatLabel="always">
+              <mat-label>Address</mat-label>
+              <app-places-auto-complete (setAddress)="setPlaceAddress(realEstate, $event)" addressType="geocode"
+                                  required formControlName="address"></app-places-auto-complete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="w-100">
+              <mat-label>Enter value of property</mat-label>
+              <app-currency formControlName="valueOfProperty" [required]="true"></app-currency>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="w-100">
+              <mat-label>Enter the rental amount</mat-label>
+              <app-currency formControlName="rentalAmount" [required]="true"></app-currency>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="w-100">
+              <mat-label>Rental Frequency</mat-label>
+              <mat-select formControlName="rentalFrequency">
+                <mat-option *ngFor="let frequency of frequencyList" [value]="frequency">{{frequency.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <ownership-details [memberNames]="memberNames" formControlName="ownership"></ownership-details>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="row d-block">
+    <span class="text-primary"><button mat-icon-button aria-label="Add Owner" class="btn-outline-primary"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another owner</span>
+  </div> -->
+  <div class="row">
+    <span class="text-primary"><button mat-icon-button aria-label="Add Another Property" class="btn-outline-primary" (click)="addAnotherProperty()"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another property</span>
+  </div>
+
+  <!-- Savings and Investment -->
+  <div class="row">
+    <span class="text-black h4 mt-50">Savings and Investments</span>
+  </div>
+  <div formArrayName="savingsAndInvestmentsFormArray">
+    <div class="row" [formGroupName]="i" *ngFor="let savingsAndInvestments of savingsAndInvestmentsFormArray.controls; let i = index">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100" >
+              <mat-label>Financial Asset Type</mat-label>
+              <mat-select formControlName="financialAssetType">
+                <mat-option *ngFor="let assetType of assetTypeList" [value]="assetType">
+                  {{assetType.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col" *ngIf="savingsAndInvestments.get('financialAssetType')?.value === 'Other'">
+            <mat-form-field class="w-100" >
+              <mat-label>Insert Other Financial Asset</mat-label>
+              <input type="text" matInput formControlName="otherFinancialAsset">
+            </mat-form-field>
+          </div>
+          <div [className]="savingsAndInvestments.get('financialAssetType')?.value === 'Other' ? 'col':'col-md-5'">
+            <mat-form-field class="w-100">
+              <mat-label>Financial Institution</mat-label>
+              <mat-select formControlName="financialInstitution">
+                <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">{{financialInstitution.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div [className]="savingsAndInvestments.get('financialAssetType')?.value === 'Other' ? 'col':'col-md-4'">
+            <mat-form-field class="w-100">
+              <mat-label>Current Balance</mat-label>
+              <app-currency formControlName="currentBalance"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <ownership-details [memberNames]="memberNames" formControlName="ownership"></ownership-details>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <span class="text-primary"><button mat-icon-button aria-label="Add another financial asset" class="btn-outline-primary" (click)="addSavingsAndInvestment()"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another financial asset type</span>
+  </div>
+
+
+
+  <!-- Superannuation -->
+  <div class="row">
+    <span class="text-black h4 mt-50">Superannuation</span>
+  </div>
+  <div class="row" formGroupName="superannuationFormGroup">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>Fund Manager name</mat-label>
+            <input matInput type="text" formControlName="fundManagerName">
+          </mat-form-field>
+        </div>
+        <div class="offset-md-2 col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Current Balance</mat-label>
+            <app-currency formControlName="currentBalance" [required]="true"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ownership-details [memberNames]="memberNames" formControlName="ownership"></ownership-details>
+    </div>
+  </div>
+
+  <!-- Other -->
+  <div class="row">
+    <span class="text-black h4 mt-50">Other (Household contents, shares, motor vehicles)</span>
+  </div>
+  <div formArrayName="otherAssetsFormArray">
+    <div class="row" [formGroupName]="i" *ngFor="let otherAssets of otherAssetsFormArray.controls; let i=index">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field class="w-100">
+              <mat-label>Financial Asset Type</mat-label>
+              <mat-select formControlName="financialAssetType">
+                <mat-option *ngFor="let assetType of applicantAssetTypeList" [value]="assetType">
+                  {{assetType.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col" *ngIf="otherAssets.get('financialAssetType')?.value?.name === 'Other'">
+            <mat-form-field class="w-100" >
+              <mat-label>Insert Other Financial Asset</mat-label>
+              <input type="text" matInput formControlName="otherFinancialAsset">
+            </mat-form-field>
+          </div>
+          <div [className]="otherAssets.get('financialAssetType')?.value === 'Other' ? 'col':'col-md-5'">
+            <mat-form-field class="w-100">
+              <mat-label>Financial Institution</mat-label>
+              <mat-select formControlName="financialInstitution">
+                <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">{{financialInstitution.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div [className]="otherAssets.get('financialAssetType')?.value === 'Other' ? 'col':'col-md-4'">
+            <mat-form-field class="w-100">
+              <mat-label>Current Balance</mat-label>
+              <app-currency formControlName="currentBalance"></app-currency>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <ownership-details [memberNames]="memberNames" formControlName="ownership"></ownership-details>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <span class="text-primary"><button mat-icon-button aria-label="Add another financial asset" class="btn-outline-primary" (click)="addOtherAssetType()"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another financial asset type</span>
+  </div>
+
+  <div class="row justify-content-end mt-5">
+    <div class="col-md-3">
+      <mat-form-field class="w-100">
+        <mat-label>Total Assets</mat-label>
+        <app-currency formControlName="totalAssets"></app-currency>
+      </mat-form-field>
+    </div>
+  </div>
+
+<!-- Liabilities -->
+  <div class="row mt-50">
+    <span class="text-black h1">Liabilities</span>
+  </div>
+  <!-- Real estate -->
+  <div class="row">
+    <span class="text-black h3">Real Estate</span>
+  </div>
+  <div formArrayName="realEstateLiabilitiesFormArray">
+    <div [formGroupName]="i" *ngFor="let realEstateLiability of realEstateLiabilitiesFormArray.controls; let i = index">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label>Address</mat-label>
+            <mat-select formControlName="realEstate">
+              <mat-option *ngFor="let realEstate of smsfRealEstateList;" [value]="realEstate">{{realEstate.smsfRealEstateAddress?.streetNumber}} {{realEstate.smsfRealEstateAddress?.route}} {{realEstate.smsfRealEstateAddress?.locality}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="offset-md-4 col-md-4">
+              <mat-form-field class="w-100">
+                <mat-label>Select lender name</mat-label>
+                <mat-select formControlName="lenderName">
+                  <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">
+                    {{financialInstitution.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field class="w-100">
+                <mat-label>Outstanding Balance</mat-label>
+                <app-currency formControlName="outstandingBalance" [required]="true"></app-currency>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>Limit</mat-label>
+                <app-currency formControlName="limit"></app-currency>
+              </mat-form-field>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Min monthly payment</mat-label>
+                <app-currency formControlName="minMonthlyPayment"></app-currency>
+              </mat-form-field>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Current Interest rate</mat-label>
+                <input matInput type="text" formControlName="currentInterestRate">
+              </mat-form-field>
+            </div>
+            <div class="col-md-2">
+              <mat-form-field class="w-100">
+                <mat-label>Remaining Term Outstanding (in months)</mat-label>
+                <input type="text" matInput formControlName="remainingTermOutstanding">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <span class="text-primary"><button mat-icon-button aria-label="Add another Liability" class="btn-outline-primary" (click)="addAnotherLiability()"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another Liability </span>
+  </div>
+
+  <!-- Personal Loans / Bank Facilities / Overdrafts -->
+  <div class="row mt-5">
+    <span class="text-black h4">Personal Loans / Bank Facilities / Overdrafts</span>
+  </div>
+  <div class="row mt-3" formGroupName="personalLoansBankFacilitiesOverdraftsFormGroup">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-4 col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Select lender name</mat-label>
+            <mat-select formControlName="lenderName">
+              <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">
+                {{financialInstitution.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Outstanding Balance</mat-label>
+            <app-currency formControlName="outstandingBalance"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label>Limit</mat-label>
+            <app-currency formControlName="limit"></app-currency>
+            <!-- <mat-select matInput formControlName="limit">
+              <mat-option value=""></mat-option>
+            </mat-select> -->
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="w-100">
+            <mat-label>Min monthly payment</mat-label>
+            <app-currency formControlName="minMonthlyPayment"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credit Cards / Store Cards -->
+  <div class="row  mt-5">
+    <span class="text-black h4">Credit Cards / Store Cards</span>
+  </div>
+  <div class="row mt-3" formGroupName="creditCardsStoreCardsFormGroup">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-4 col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Select lender name</mat-label>
+            <mat-select formControlName = "lenderName">
+              <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">
+                {{financialInstitution.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Outstanding Balance</mat-label>
+            <app-currency formControlName="outstandingBalance"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="w-100">
+            <mat-label>Limit</mat-label>
+            <app-currency formControlName="limit"></app-currency>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="w-100">
+            <mat-label>Min monthly payment</mat-label>
+            <app-currency formControlName="minMonthlyPayment"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hire Purchase / Leases -->
+  <div class="row  mt-5">
+    <span class="text-black h4">Hire Purchase / Leases</span>
+  </div>
+  <div class="row mt-3" formGroupName="hirePurchaseLeasesFormGroup">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-4 col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Select lender name</mat-label>
+            <mat-select formControlName="lenderName">
+              <mat-option *ngFor="let financialInstitution of financialInstitutionList" [value]="financialInstitution">
+                {{financialInstitution.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Outstanding Balance</mat-label>
+            <app-currency formControlName="outstandingBalance"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-3 col-md-2">
+          <mat-form-field class="w-100">
+            <mat-label>Min monthly payment</mat-label>
+            <app-currency formControlName="minMonthlyPayment"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Other (HECS, HELP, Child Maintenance, Other) -->
+  <div class="row  mt-5">
+    <span class="text-black h4">Other (HECS, HELP, Child Maintenance, Other)</span>
+  </div>
+  <div class="row mt-3" formGroupName="otherLiabilitiesFormGroup">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-4 col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Select:</mat-label>
+            <mat-select  formControlName="otherLiabilityType">
+              <mat-option *ngFor="let applicantOtherLiabilityType of applicantOtherLiabilityTypeList" [value]="applicantOtherLiabilityType">
+                {{applicantOtherLiabilityType.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Outstanding Balance</mat-label>
+            <app-currency formControlName="outstandingBalance"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="offset-md-3 col-md-2">
+          <mat-form-field class="w-100">
+            <mat-label>Min monthly payment</mat-label>
+            <app-currency formControlName="minMonthlyPayment"></app-currency>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-end mt-5">
+    <div class="col-md-3">
+      <mat-form-field class="w-100">
+        <mat-label>Total Liabilities</mat-label>
+        <app-currency formControlName="totalLiabilities"></app-currency>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Expenses -->
+  <div class="row  mt-5">
+    <span class="text-black h3">Expenses</span>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 ml-0 p-0 table table-borderless">
+      <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z0 ml-0" formArrayName="expensesFormArray">
+        <ng-container matColumnDef="Category">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let row" class="text-sm text-dark">
+            <div style="width: 350px; word-wrap: break-word;">
+              {{row.name}}
+              <mat-icon [attr.aria-haspopup]="true" [matTooltip]="row.description" [attr.aria-label]="row.description" color="primary" class="mat-icon-help">help_outline</mat-icon>
+            </div>
+          </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Amount">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Amount</mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let row; let i = index" class="text-sm text-muted" [formGroupName]="i">
+            <mat-form-field style="width: 80%;">
+              <app-currency formControlName="amount"></app-currency>
+            </mat-form-field>
+          </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Frequency">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Frequency</mat-header-cell>
+          <mat-cell mat-cell *matCellDef="let row; let i = index;" class="text-sm text-muted" [formGroupName]="i">
+            <mat-form-field class="w-100">
+              <mat-select formControlName="frequency">
+                <mat-option *ngFor="let frequency of frequencyList" [value]="frequency">{{frequency.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedExpenseColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedExpenseColumns;"></mat-row>
+      </mat-table>
+    </div>
+  </div>
+
+  <div class="row">
+    <span class="text-primary"><button mat-icon-button aria-label="Add Another Expense" class="btn-outline-primary" (click)="addAnotherExpense()"><mat-icon color="primary" class="mt-0">add</mat-icon></button> Add another expense</span>
+  </div>
+
+  <div class="mt-1">
+    <button class="btn-sm btn-outline-primary" mat-button matStepperPrevious>Back</button>
+    <button class="btn-sm btn-outline-primary float-right" mat-button matStepperNext>Next</button>
+  </div>
+</form>

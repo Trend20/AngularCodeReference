@@ -1,0 +1,13 @@
+<div [formGroup]="abn" id="parentDiv">
+    <input matInput #number
+        formControlName="number"
+        type="number"
+        [ngClass]="{'text-success': (isValidAbnNumber)}" (input)="_handleInput(abn.controls.number)">
+    <mat-icon color="accent" class="bg-white" *ngIf="!isValidAbnNumber && !loading">error</mat-icon>
+    <mat-icon class="text-success" *ngIf="isValidAbnNumber && !loading">check_circle</mat-icon>
+    <!-- <span class="fa fa-spinner spinner"
+      *ngIf="loading"></span> -->
+      <div  *ngIf="loading" class="spinner-border spinner-border-sm text-success">
+        <!-- <span class="sr-only">Loading...</span> -->
+      </div>
+</div>

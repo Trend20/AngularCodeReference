@@ -1,0 +1,65 @@
+
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5 Logo">
+        <img src="/assets/images/logo.png" id="logoImage" class="img-fluid cart-logo" alt="Sample image" />
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form [formGroup]="loginForm" class='login-form'>
+          <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+            <p class="lead fw-normal mb-0 me-3 sign-text">Sign in </p>
+          </div>
+          <hr />
+          
+          <div class="form-outline mb-4">
+            <mat-label class="form-label" for="form3Example3">Username</mat-label>
+            <input matinput type="email" id="username" name="username" class="form-control form-control-lg form3"
+              placeholder="Enter a valid Username" formControlName="username" />
+
+            <div *ngIf="usernameError !==''" class="help-block">{{usernameError}}</div>
+
+          </div>
+
+          <div class="form-outline mb-3 ">
+            <label class="form-label" for="form3Example4">Password</label>
+            <div class='input-group'>
+               <input type="text" id="form3Example4" class="form-control form-control-lg password form3"
+                placeholder="Enter password" *ngIf="showPassword" formControlName="password" required />
+               <input id="form3Example4" class="form-control form-control-lg password form3" placeholder="Enter password"
+                type="password" *ngIf="!showPassword" formControlName="password" required />
+
+               <div (click)='TogleShowPassword()' class="input-group-addon">
+                <br />
+                <i class="{{showPassword ? 'fa fa-eye Eye' : 'fa fa-eye-slash Eye'}}" aria-hidden="true"></i>
+               </div>
+            </div>
+            <div *ngIf="passwordErr !==''" class="help-block">{{passwordErr}}</div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+
+            <div class="form-check mb-0">
+              <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+              &nbsp;&nbsp;&nbsp;
+              <label class="form-check-label" for="form2Example3">
+                Remember me
+              </label>
+            </div>
+            <a href="#!" class="link-danger">Forgot password?</a>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button (click)="login()" [disabled]='isLoggingIn' type="submit" class="btn btn-primary btn-lg login">
+              <span *ngIf="!isLoggingIn && !showLoader">Login</span>
+              <span *ngIf="isLoggingIn || showLoader"> wait..<img [ngStyle]="{'height': '100%'}"
+                  src="/assets/images/load.gif" class="img-fluid" alt="Sample image" /></span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</section>

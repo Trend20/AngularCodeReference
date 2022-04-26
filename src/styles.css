@@ -1,0 +1,256 @@
+
+:root{
+  --fontFamily:'sans-serif';
+  --fontSize:'19px';
+  --fontWeight:'400'
+ }
+ *{
+   font-family: var(--fontFamily);
+   font-size: var(--fontSize);
+   font-weight: var(--fontWeight);
+   font-style: normal;
+ }
+
+html,
+body {
+ height: 100%;
+}
+body {
+ margin: 0;
+ font-family: Roboto, "Helvetica Neue", sans-serif;
+ background-color: #eaf0fa !important;
+ overflow-x: hidden;
+}
+ 
+:host
+ ::ng-deep
+ .mat-form-field-appearance-outline.mat-form-field-invalid
+ .mat-form-field-outline-thick,
+:host ::ng-deep .mat-form-field.mat-form-field-invalid .mat-form-field-label,
+.mat-error {
+ color: black !important;
+}
+.mat-form-field.mat-form-field-invalid .mat-form-field-label {
+ color: black;
+}
+ 
+.right-aligned-header > .mat-content {
+ justify-content: space-between;
+}
+ 
+.mat-content > mat-panel-title,
+.mat-content > mat-panel-description {
+ flex: 0 0 auto;
+}
+ 
+.mt-15 {
+ margin-top: 85px;
+}
+ 
+.section-title {
+ font-weight: bold;
+ font-size: 24px;
+}
+.sub-section-title {
+ font-weight: bold;
+ font-size: 20px;
+}
+ 
+.main-container {
+ position: absolute;
+ top: 100px;
+ left: 250px;
+ right: 0;
+ bottom: 0;
+ padding: 20px;
+}
+.section-container{
+ 
+ display: block;
+ width: 80%;
+ float: right;
+ }
+ 
+.loading-shade {
+
+ position: absolute;
+ top: 0;
+ left: 0;
+ bottom: 56px;
+ right: 0;
+ background: rgba(0, 0, 0, 0.15);
+ z-index: 1;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+ 
+mat-error{
+ font-size: 0.8rem !important;
+}
+ 
+
+
+mat-error{
+  font-size: 0.8rem !important;
+}
+
+
+@font-face {
+ font-family: "Anthoni";
+ src: local("Anthoni"),
+   url(./assets/fonts/Signatures/AnthoniSignature.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "Gisellia";
+ src: local("Gisellia"),
+   url(./assets/fonts/Signatures/GiselliaSignaturedemo.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "MungSignature";
+ src: local("MungSignature"),
+   url(./assets/fonts/Signatures/MungSignature.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "SignaturexDemoRegular";
+ src: local("SignaturexDemoRegular"),
+   url(./assets/fonts/Signatures/SignaturexDemoRegular.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "Talesian";
+ src: local("Talesian"),
+   url(./assets/fonts/Signatures/Talesian.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "AndersonSignature";
+ src: local("AndersonSignature"),
+   url(./assets/fonts/Signatures/AndersonSignature.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "AndersonSignatureItalic";
+ src: local("AndersonSignatureItalic"),
+   url(./assets/fonts/Signatures/AndersonSignatureItalic.ttf)
+     format("truetype");
+}
+ 
+@font-face {
+ font-family: "AndersonSignatureSwash";
+ src: local("AndersonSignatureSwash"),
+   url(./assets/fonts/Signatures/AndersonSignatureSwash.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "JuliettaSignature";
+ src: local("JuliettaSignature"),
+   url(./assets/fonts/Signatures/JuliettaSignature.ttf) format("truetype");
+}
+ 
+@font-face {
+ font-family: "MaradonaSignature";
+ src: local("MaradonaSignature"),
+   url(./assets/fonts/Signatures/MaradonaSignature.ttf) format("truetype");
+}
+ 
+.toast-container .ngx-toastr {
+ position: relative;
+ overflow: hidden;
+ margin: 0 0 6px;
+ padding: 15px 15px 15px 15px;
+ height: 6em;
+ border-radius: 3px 3px 3px 3px;
+ background-position: 10px center;
+ background-repeat: no-repeat;
+ background-size: 24px;
+ border: solid 2px;
+ box-shadow: 0 0 12px #999999;
+ color: #ffffff;
+ width: 60em !important;
+}
+ 
+.toast-container .ngx-toastr:hover {
+ box-shadow: 0 0 12px #000000;
+ opacity: 1;
+ cursor: pointer;
+}
+ 
+.toast-success {
+ background-image: none !important;
+ background-color: #fff !important;
+ border-color: green !important;
+ border-left-style: solid !important;
+ border-left-width: 5px !important;
+}
+ 
+.toast-success::after {
+ content: "\f00c" !important;
+ font-family: "FontAwesome" !important;
+ position: absolute !important;
+ top: 14px !important;
+ left: 15px !important;
+ color: green !important;
+ font-size: 2em !important;
+}
+ 
+.toast-title {
+ color: rgb(82, 82, 82) !important;
+ font-size: 16px !important;
+ /* border-bottom: 1px solid; */
+}
+ 
+.toast-message {
+ color: black !important;
+}
+.Details{
+  width: 20%;
+ display: flex;
+ margin-right: 20px;
+ justify-content: space-around;
+}
+ 
+@media only screen and (max-width: 990px) {
+ .main-container {
+ 
+   top: 100px;
+   left: 0px;
+   right: 0;
+   bottom: 0;
+   padding: 20px;
+ 
+ }
+ 
+ .Details{
+    width: 60%;
+   display: flex;
+   flex-wrap: wrap;
+   margin-right: 20px;
+   justify-content: space-around;
+ }
+}
+ 
+@media only screen and(max-width:800px){
+  #wraper{
+    display: none;
+  }
+ 
+}
+ 
+
+
+@media only screen and (max-width: 800px) {
+  .main-container {
+
+    top: 100px;
+    left: 0px;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+
+  }
+}
+

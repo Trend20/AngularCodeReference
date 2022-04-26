@@ -1,0 +1,455 @@
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="large"
+  type="ball-clip-rotate-multiple"
+>
+</ngx-spinner>
+
+<form  [formGroup]="personalDetailFormGroup" class="card-body">
+  <ng-template matStepLabel>Personal Details</ng-template>
+
+  <!-- <div *ngIf="serviceabilityFormGroup?.get('refinanceCheckPass')?.value === false" class="alert alert-warning" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Unable to meet Ezy Express requirements</strong> Please fill out the rest of the information required to proceed.
+  </div> -->
+
+  <!-- <div *ngIf="serviceabilityFormGroup?.get('refinanceCheckPass')?.value === true" class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+     <strong>CONGRATULATIONS</strong> Your Loan has qualified for our Ezy Express solution. Please fill out the rest of the details so we that we can proceed
+  </div> -->
+
+  <!-- new alignments -->
+  <div class="row">
+    <!-- first col -->
+    <div class="col">
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Please enter SMSF ABN</mat-label>
+          <app-abn formControlName="smsfAbn" [required]="isPreApprovalYes()"
+                   (abnSearchDetailsEmitter)="setAbnSearchDetails($event)"
+                   (abnSearchErrorEmmitter)="setAbnSearchErrorMessage($event)"></app-abn>
+          <mat-error class="text-danger" *ngIf= "abnSearchErrorMessage != ''">{{abnSearchErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>SMSF Fund Name</mat-label>
+          <input type="text" formControlName="smsfName" matInput [required]="isPreApprovalYes()">
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>SMSF Address</mat-label>
+          <input type="text" matInput formControlName="address" placeholder="Enter the address" [required]="isPreApprovalYes()" [readonly]="!checkboxList.ABNRegisteredAddressCheck" />
+          <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i> Registered address</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class= "col mt-4">
+        <mat-checkbox class="w-100" (change)="toggleSMSFAddressReadonly('ABNRegisteredAddressCheck')" [checked]="checkboxList.ABNRegisteredAddressCheck">I will manually enter SMSF registered address</mat-checkbox>
+      </div>
+    </div>
+    <!-- end of first col -->
+
+    <!-- second column -->
+
+    <div class="col">
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Please enter SMSF Trustee ACN</mat-label>
+          <app-property-trustee-acn formControlName="smsfTrusteeAcn" [required]="isPreApprovalYes()" [acnSimilarValidator]="personalDetailFormGroup?.errors?.acnSimilar"
+                                    (trusteeAcnDetails)="setSMSFTrusteeDetails($event)" [acnType]="'trustee'"
+                                    (acnErrorEmmitter)="setAcnSearchErrorMessage($event)"></app-property-trustee-acn>
+          <mat-error class="text-danger" *ngIf= "personalDetailFormGroup?.errors?.acnSimilar && acnTrusteeErrorMessage == ''">Field cannot be similar to Property Trustee ACN</mat-error>
+          <mat-error class="text-danger" *ngIf= "acnTrusteeErrorMessage != '' && !personalDetailFormGroup?.errors?.acnSimilar">{{acnTrusteeErrorMessage}}</mat-error>
+          <mat-error class="text-danger" *ngIf= "acnTrusteeErrorMessage != '' && personalDetailFormGroup?.errors?.acnSimilar">Field cannot be similar to Property Trustee ACN</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>SMSF Trustee Name</mat-label>
+          <input type="text" formControlName="smsfTrusteeName" matInput [required]="isPreApprovalYes()">
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>SMSF Trustee Address</mat-label>
+          <input type="text" matInput formControlName="smsfTrusteeAddress" [required]="isPreApprovalYes()" [readonly]="!checkboxList.ACNSMSFRegisteredAddressCheck" />
+          <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i> Registered address</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class= "col mt-4">
+        <mat-checkbox class="w-100" (change)="toggleSMSFTrusteeAddressReadonly('ACNSMSFRegisteredAddressCheck')" [checked]="checkboxList.ACNSMSFRegisteredAddressCheck">I will manually enter SMSF Trustee registered address</mat-checkbox>
+      </div>
+
+    </div>
+
+    <!-- end of second column -->
+
+    <!-- third column -->
+    <div class="col">
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Please enter Property Trustee ACN</mat-label>
+          <app-property-trustee-acn formControlName="propertyTrusteeACN" [required]="isPreApprovalYes()" [acnSimilarValidator]="personalDetailFormGroup?.errors?.acnSimilar"
+                                    (trusteeAcnDetails)="setPropertyTrusteeDetails($event)"  [acnType]="'property'"
+                                    (acnErrorEmmitter)="setAcnSearchErrorMessage($event)"></app-property-trustee-acn>
+
+          <mat-error class="text-danger" *ngIf= "personalDetailFormGroup?.errors?.acnSimilar && acnPropertyErrorMessage == ''">Field cannot be similar to SMSF Trustee ACN</mat-error>
+          <mat-error class="text-danger" *ngIf= "acnPropertyErrorMessage != '' && !personalDetailFormGroup?.errors?.acnSimilar">{{acnPropertyErrorMessage}}</mat-error>
+          <mat-error class="text-danger" *ngIf= "acnPropertyErrorMessage != '' && personalDetailFormGroup?.errors?.acnSimilar">{{acnPropertyErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Property Trustee Name</mat-label>
+          <input type="text" formControlName="propertyTrustName" matInput [required]="isPreApprovalYes()">
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Property Trustee Address</mat-label>
+          <input type="text" matInput formControlName="propertyTrusteeAddress" placeholder="Enter the address" [required]="isPreApprovalYes()"  [readonly]="!checkboxList.ACNPropertyRegisteredAddressCheck"/>
+          <mat-hint><i class="fa fa-info-circle" aria-hidden="true"></i> Registered address</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Please type Property Trust Name here</mat-label>
+          <input type="text" formControlName="propertyTrusteeName" matInput [required]="isPreApprovalYes()">
+          <mat-error>Property Trust Name Required!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class= "col mt-1">
+        <mat-checkbox class="w-100" (change)="togglePropertyTrusteeAddressReadonly('ACNPropertyRegisteredAddressCheck')" [checked]="checkboxList.ACNPropertyRegisteredAddressCheck">I will manually enter Property Trustee registered address</mat-checkbox>
+      </div>
+    </div>
+    <!-- end of third column -->
+  </div>
+
+  <mat-divider></mat-divider>
+  <div formArrayName="memberDetailList"
+       *ngFor="let memberDetail of memberDetailList.controls; let i = index;">
+    <div class="right-aligned-header row">
+      <div class="col-md-10" id="title">Personal Information for {{ memberDetail.get('firstName')?.value}} </div>
+      <div class="col-md-2 float-right">
+        <mat-icon color="accent" *ngIf="memberDetail.invalid">error</mat-icon>
+      </div>
+    </div>
+    <div><h2>Identification</h2></div>
+    <div [formGroupName]="i">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label class="text-muted mt-4">Please select how to enter data</mat-label>
+            <mat-select placeholder="Select an option" formControlName="dataEntryOption">
+              <mat-option value="1">Upload driver's license</mat-option>
+              <mat-option value="2">Upload passport</mat-option>
+              <mat-option value="3">Enter driver's licence manually</mat-option>
+              <mat-option value="4">Enter passport manually</mat-option>
+            </mat-select>
+            <mat-error>Please select one option!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-8">
+          <p class="ml-2 mt-2 h4" *ngIf="memberDetail.get('dataEntryOption')?.value === '1'">Upload Driver's
+            licence</p>
+          <p class="text-muted" *ngIf="memberDetail.get('dataEntryOption')?.value === '1'">Copy of Driver's licence,
+            both front and back (Add all member details)</p>
+          <div class="row" *ngIf="memberDetail.get('dataEntryOption')?.value === '1'">
+            <div class="col-md-3">
+              <div draggable="true" ngClass="{{dragAreaClass}}">
+                <div class="row">
+                  <div class="col-md-12 text-center bg-info">
+                    <div mat-card-avatar>
+                      <mat-icon class="icon-lg">cloud_upload</mat-icon>
+                    </div>
+                    <span class="text-white"> Drag front page of Driver's license here
+                                  <a class="text-white" href="javascript:void(0)" (click)="driverLicenseFront.click()">
+                                      or click to open
+                                  </a>
+                      </span>
+                    <input type="file" #driverLicenseFront [multiple]="false"
+                           (change)="onFileChange($event, i, 'licenceFrontImage')"
+                           style="display:none"/>
+                    <div class="dragged-files-wrapper" *ngIf="draggedFiles">
+                      <div class="file" *ngFor="let file of draggedFiles">
+                        {{file}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="error" *ngIf="error">
+                Only one file at time allow
+              </div>
+            </div>
+            <div class="col-md-3 ml-4">
+              <div draggable="true" ngClass="{{dragAreaClass}}">
+                <div class="row">
+                  <div class="col-md-12 text-center bg-info">
+                    <div mat-card-avatar>
+                      <mat-icon class="icon-lg">cloud_upload</mat-icon>
+                    </div>
+                    <span class="text-white"> Drag back page of Driver's license here
+                        <a class="text-white"
+                           href="javascript:void(0)"
+                           (click)="driverLicenseBack.click()"> or click to open
+                        </a>
+                      </span>
+                    <input type="file" #driverLicenseBack [multiple]="false"
+                           (change)="onFileChange($event, i, 'licenceBackImage')"
+                           style="display:none"/>
+                    <div class="dragged-files-wrapper" *ngIf="draggedFiles">
+                      <div class="file" *ngFor="let file of draggedFiles">{{file}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="error" *ngIf="error">Only one file at time allow</div>
+            </div>
+          </div>
+
+          <p class="ml-2 mt-2 h4" *ngIf="memberDetail.get('dataEntryOption')?.value === '2'">Upload Passport</p>
+          <p class="text-muted" *ngIf="memberDetail.get('dataEntryOption')?.value === '2'">Copy of passport bio
+            page</p>
+          <div class="row" *ngIf="memberDetail.get('dataEntryOption')?.value === '2'">
+            <div class="col-md-3">
+              <div draggable="true" ngClass="{{dragAreaClass}}">
+                <div class="row">
+                  <div class="col-md-12 text-center bg-info">
+                    <div mat-card-avatar>
+                      <mat-icon class="icon-lg">cloud_upload</mat-icon>
+                    </div>
+                    <span class="text-white">Drag upload passport bio page
+                      <!--  -->
+                        <a class="text-white" href="javascript:void(0)" (click)="passportFront.click()">
+                          or click to open
+                        </a>
+                      </span>
+                    <input type="file" #passportFront [multiple]="false"
+                           (change)="onFileChange($event, i, 'passportImage')"
+                           style="display:none"/>
+                    <div class="dragged-files-wrapper" *ngIf="draggedFiles">
+                      <div class="file" *ngFor="let file of draggedFiles">
+                        {{file}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- progress bar -->
+      <div class="progress mt-3 upload-progress" *ngIf="showProgress === true">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+
+      <!-- end of progress bar -->
+      <div class="row mt-5">
+        <div class="col">
+          <div class="row">
+            <div class="col-md-3">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Title</mat-label>
+                <mat-select formControlName="title" placeholder="Title" novalidate>
+                  <mat-option *ngFor="let title of titleList" [value]="title">{{title}}</mat-option>
+                </mat-select>
+                <mat-error>Title Required!</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-9">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input formControlName="firstName" matInput placeholder="Enter the first name"
+                       (focusout)="onFocusOutMemberFirstNameEvent(i)" required>
+                       <mat-error>First Name Required!</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Middle Name</mat-label>
+            <input formControlName="middleName" matInput placeholder="Enter the middle name" required>
+            <mat-error>Middle Name Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input formControlName="lastName" matInput placeholder="Enter the last name">
+            <mat-error>Last Name Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col-md-8">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Date of Birth</mat-label>
+                <input #birthDates (input)="dateListener($event, i)" matInput [matDatepicker]="picker" formControlName="dateOfBirth"
+                       placeholder="DD/MM/YYYY" [max]="minDateOfBirth" maxlength="10">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+                <mat-error>Date of Birth Required!</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender" required>
+                  <mat-option *ngFor="let gender of genderList" [value]="gender">{{gender}}</mat-option>
+                </mat-select>
+                <mat-error>Select your gender!</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5"
+           *ngIf="memberDetail.get('dataEntryOption')?.value === '4'||memberDetail.get('dataEntryOption')?.value === '2'">
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Passport number</mat-label>
+            <input formControlName="passportNumber" matInput placeholder="Enter passport number" required>
+            <mat-error>Passport number Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Country of issue</mat-label>
+            <mat-select formControlName="countryOfIssue" required>
+              <mat-option *ngFor="let country of countries" [value]="country.name">{{country.name}}</mat-option>
+            </mat-select>
+            <mat-error>Country of issue Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Are you an Australian Citizen/Permanent Resident?</mat-label>
+            <mat-select formControlName="citizenOrResident" required>
+              <mat-option value="Yes">Yes</mat-option>
+              <mat-option value="No">No</mat-option>
+            </mat-select>
+            <mat-error>Select Yes/No!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Country of Residency</mat-label>
+            <mat-select formControlName="country" required="">
+              <mat-option *ngFor="let country of countries" [value]="country.name">{{country.name}}</mat-option>
+            </mat-select>
+            <mat-error>Country of Residency Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row mt-5"
+           *ngIf="memberDetail.get('dataEntryOption')?.value === '3'||memberDetail.get('dataEntryOption')?.value === '1'">
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Licence number</mat-label>
+            <input formControlName="licenseNumber" matInput placeholder="Enter licence number" required>
+            <mat-error>Licence number Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>State of issue</mat-label>
+            <mat-select formControlName="stateOfIssue" required>
+              <mat-option *ngFor="let state of states" [value]="state.code">{{state.name}}</mat-option>
+            </mat-select>
+            <mat-error>State of issue Required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Are you an Australian Citizen/Permanent Resident?</mat-label>
+            <mat-select formControlName="citizenOrResident" required>
+              <mat-option value="Yes">Yes</mat-option>
+              <mat-option value="No">No</mat-option>
+            </mat-select>
+            <mat-error>Select Yes/No!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Country of Residency</mat-label>
+            <mat-select formControlName="country" required>
+              <mat-option *ngFor="let country of countries" [value]="country.name">{{country.name}}</mat-option>
+            </mat-select>
+            <mat-error>Country of Residency Required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Mobile Phone number</mat-label>
+            <input type="tel" formControlName="mobilePhoneNumber" matInput placeholder="Enter Mobile number" required>
+            <mat-hint *ngIf="personalDetailFormGroup.errors?.mobileNotUnique">
+              <span class="mat-error">{{personalDetailFormGroup.errors?.mobileErrorMessage}}</span>
+            </mat-hint>
+            <mat-error>Mobile Phone number required!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Area Code</mat-label>
+                <mat-select formControlName="areaCode">
+                  <mat-option [value]="areaCode" *ngFor="let areaCode of areaCodeList">{{areaCode}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-8">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Home Phone number</mat-label>
+                <input type="tel" formControlName="homePhoneNumber" matInput placeholder="Enter Home phone number">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Email address</mat-label>
+            <input type="email" formControlName="emailAddress" matInput placeholder="Enter email address" required>
+            <mat-hint *ngIf="personalDetailFormGroup.errors?.emailNotUnique">
+              <span class="mat-error">{{personalDetailFormGroup.errors?.emailErrorMessage}}</span>
+            </mat-hint>
+            <mat-error>Email address required!</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row mt-5" >
+        <div class="col">
+          <mat-form-field class="w-100" floatLabel="always" appearance="outline">
+            <mat-label>Address</mat-label>
+            <app-places-auto-complete [addressLocation]="'personal'" (setAddress)="updateApplicantAddressValues(memberDetail, $event)"
+                                      formControlName="address" required></app-places-auto-complete>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="mt-1">
+      <button class="btn-sm btn-outline-primary" mat-button (click)="saveDataOnBack()">Back</button>
+      <button class="btn-sm btn-outline-primary float-right" mat-button (click)="saveData()">Next</button>
+    </div>
+  </form>

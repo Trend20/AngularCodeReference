@@ -1,0 +1,22 @@
+.box {
+  /* background-color: #47748f; */
+  border-radius: 6px;
+  /* border-style: solid; */
+  /* margin: 6rem; */
+  height: 70px;
+  /* margin-top: 5px; */
+  cursor: pointer;
+}
+
+.confirm-box {
+  /* background-color: #5c8f52; */
+  width: 85px;
+  height: 85px;
+  border-radius: 85px;
+  /* margin: 6rem; */
+}
+
+.nav-btn {
+  font-weight: 700;
+  font-size: 1rem;
+}

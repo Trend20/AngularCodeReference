@@ -1,0 +1,116 @@
+<form [formGroup]="brokerReviewFormGroup">
+  <ng-template matStepLabel>Broker Review</ng-template>
+  <p class="h2">Broker Review - Loan does not meet lender guidelines </p>
+
+  <div class="row">
+    <div class="col mt-5 descriptions">
+      <p class="ml-3 font-weight-bold">Please review the below and as necessary discuss with your Account Manager [name] on [number] to either: </p>
+      <div>
+
+        <div class="row mt-2 w-100" *ngFor="let review of reviewQuestions; let i = index;">
+          <div class="col-md-6">
+            <p class="ml-3">{{ review.content }}</p>
+          </div>
+
+            <div class="col-md-2 radio-option">
+              <mat-radio-group formControlName="{{ review.formControlNameValue }}">
+                <mat-radio-button class="options" value="Yes">Yes</mat-radio-button>
+                <mat-radio-button class="options" value="No">No</mat-radio-button>
+             </mat-radio-group>
+            </div>
+
+            <!-- email button -->
+            <div class="col-md-2 ml-5" *ngIf="i === 0 && brokerReviewFormGroup.get('overrideAndRetainProduct')?.value == 'Yes'">
+              <button mat-raised-button color="primary" (click)="sendMail()">Send e-mail</button>
+            </div>
+
+            <!-- DO NOT DELETE -->
+            <!-- <div class="comment ml-3 mt-3 w-50" *ngIf="i === 0 && brokerReviewFormGroup.get('overrideAndRetainProduct')?.value == 'Yes'">
+              <mat-form-field class="w-100 ml-2" appearance="outline">
+                <mat-label>Comments</mat-label>
+                <textarea matInput  formControlName="firstBrokerNotes" placeholder="Enter notes here..." required></textarea>
+              </mat-form-field>
+            </div> -->
+
+            <!-- confirm withdrawal button -->
+            <div class="col-md-2" *ngIf="i === 2 && brokerReviewFormGroup.get('withdrawLoanApplication')?.value == 'Yes'">
+              <a mat-raised-button color="warn" id="withdraw" routerLink="/home/recycled">Confirm Withdrawal</a>
+            </div>
+        </div>
+      </div>
+      <!-- credit rule -->
+      <div class="credit-rules mt-3">
+        <div class="col">
+          <h3><b>Credit Rule/s</b></h3>
+        </div>
+        <div class="col">
+
+        </div>
+     </div>
+
+     <!-- refer -->
+     <div class="refer">
+       <div class="col">
+         <h3>Refer reasons</h3>
+       </div>
+       <div class="col">
+
+        <mat-form-field class="w-50" appearance="outline">
+          <mat-label>Refer reasons</mat-label>
+          <textarea matInput  placeholder="Enter Refer Reasons..." required></textarea>
+        </mat-form-field>
+        </div>
+      </div>
+
+     <!-- approval question -->
+     <div class="col w-100 mt-3">
+       <div class="row w-100">
+          <div class="col">
+            <p>Have you received approval from your Account Manager to proceed on this product?</p>
+          </div>
+          <div class="col radio-option">
+            <mat-radio-group formControlName="receivedPreapproval">
+              <mat-radio-button class="options" value="Yes">Yes</mat-radio-button>
+              <mat-radio-button class="options" value="No">No</mat-radio-button>
+             </mat-radio-group>
+          </div>
+       </div>
+      <div class="w-100" *ngIf="brokerReviewFormGroup.get('receivedPreapproval')?.value == 'Yes'">
+        <mat-form-field class="w-50" appearance="outline">
+          <mat-label>Broker notes</mat-label>
+          <textarea matInput  formControlName="firstBrokerNotes" placeholder="Enter notes here..." required></textarea>
+        </mat-form-field>
+      </div>
+     </div>
+    </div>
+    <div class="actions mt-5" *ngIf="(brokerReviewFormGroup.get('changeProducts')?.value == 'Yes')">
+      <!-- *ngIf="i === 1 && brokerReviewFormGroup.get('changeProducts')?.value == 'Yes'" -->
+      <div class="col w-100">
+        <button mat-raised-button>Click here to change funders/ Solution</button>
+      </div>
+
+      <div class="col w-100">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Broker notes</mat-label>
+          <textarea matInput formControlName="secondBrokerNotes" placeholder="Enter notes here..." required></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col w-100">
+        <button mat-raised-button matStepperNext>Continue to SoEzy Amended Funder</button>
+      </div>
+
+    </div>
+  </div>
+
+ <div class="mt-1">
+  <button class="btn-sm btn-outline-primary nav-btn" mat-button matStepperPrevious>
+    Back
+  </button>
+  <button *ngIf="brokerReviewFormGroup.get('receivedPreapproval')?.value == 'Yes' && brokerReviewFormGroup.get('firstBrokerNotes')?.value != ''"
+    class="btn-sm btn-outline-primary float-right nav-btn" mat-button matStepperNext>
+    Next
+  </button>
+</div>
+
+</form>
